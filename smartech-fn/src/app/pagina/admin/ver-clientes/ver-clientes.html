@@ -1,0 +1,91 @@
+<div class="container mt-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="title">Gestión de Clientes</h2>
+  </div>
+
+  <div class="filter-card">
+    <input type="text"
+           class="form-control"
+           placeholder="Buscar por nombre o correo..."
+           [(ngModel)]="filtro"
+           (input)="cargarClientes()">
+
+    <select class="form-select"
+            [(ngModel)]="orden"
+            (change)="cambiarOrden(orden)">
+      <option value="DESC">Clientes que MÁS compran</option>
+      <option value="ASC">Clientes que MENOS compran</option>
+    </select>
+  </div>
+
+  <div *ngIf="clientes.length === 0" class="text-center mt-5">
+    <div class="card p-4 shadow-sm" style="max-width: 450px; margin: 0 auto;">
+      <i class="bi bi-emoji-frown display-4 text-muted"></i>
+      <h4 class="mt-3 text-muted">No hay clientes registrados</h4>
+      <p class="text-secondary">Aún no existen clientes creados en el sistema.</p>
+    </div>
+  </div>
+
+  <div class="table-responsive mt-3" *ngIf="clientes.length > 0">
+    <table class="table table-hover align-middle">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Cliente</th>
+          <th>Correo</th>
+          <th>Teléfono</th>
+          <th>Total Comprado (Online)</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let c of clientes; let i = index">
+          <td>{{ i + 1 }}</td>
+
+          <td>
+            <strong>{{ c.nombre }} {{ c.apellido }}</strong><br>
+            <small class="text-muted">{{ c.correo }}</small>
+          </td>
+
+          <td>{{ c.correo }}</td>
+          <td>{{ c.telefono }}</td>
+
+          <td>
+            <span class="badge bg-primary">
+              S/ {{ c.totalComprado | number:'1.2-2' }}
+            </span>
+          </td>
+
+          <td>
+            <button class="btn btn-outline-primary btn-sm me-2"
+                    (click)="verEstadisticas(c)">
+              <i class="bi bi-graph-up"></i>
+            </button>
+
+            <button class="btn btn-outline-secondary btn-sm"
+                    (click)="verDirecciones(c)">
+              <i class="bi bi-geo-alt"></i>
+            </button>
+          </td>
+
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <app-estadistica-cliente-modal
+      *ngIf="modalEstadisticas"
+      [cliente]="clienteSeleccionado"
+      [cerrar]="cerrarEstadisticas.bind(this)">
+  </app-estadistica-cliente-modal>
+
+
+  <app-direcciones-cliente-modal
+      *ngIf="modalDirecciones"
+      [cliente]="clienteSeleccionado"
+      [cerrar]="cerrarDirecciones.bind(this)">
+  </app-direcciones-cliente-modal>
+
+</div>

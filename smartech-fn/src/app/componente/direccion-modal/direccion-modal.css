@@ -1,0 +1,35 @@
+.custom-backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.text-orange {
+  color: #f59e00;
+}
+
+.btn-orange {
+  background-color: #f59e00;
+  border: none;
+}
+
+.btn-orange:hover {
+  background-color: #d88b00;
+}
+
+input.form-control {
+  height: 42px;
+}
+
+.modal-content {
+  animation: fadeUp 0.25s ease-in-out;
+}
+
+@keyframes fadeUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

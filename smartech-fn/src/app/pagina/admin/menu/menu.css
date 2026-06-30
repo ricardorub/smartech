@@ -1,0 +1,133 @@
+.admin-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+
+.sidebar {
+  background: linear-gradient(135deg, #f7931e, #e67e00);
+  padding: 1.5rem;
+  color: white;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.08);
+}
+
+.sidebar-header {
+  text-align: center;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+
+.logo-circle {
+  width: 60px;
+  height: 60px;
+  margin: auto;
+  border-radius: 50%;
+  background: white;
+ color: #f7931e;
+  font-weight: 900;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 15px;
+  border-radius: 12px;
+  color: rgba(255,255,255,0.85);
+  text-decoration: none;
+  margin-bottom: 6px;
+  transition: all 0.2s ease;
+}
+
+.sidebar-link i {
+  font-size: 1.2rem;
+}
+
+.sidebar-link:hover {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  transform: translateX(4px);
+}
+
+.sidebar-link.active {
+  background: white;
+   color: #f7931e;
+  font-weight: 700;
+}
+
+/* CONTENT */
+.main-content {
+  padding: 2rem;
+  background: #f8fafc;
+}
+
+/* RESPONSIVE */
+@media (max-width: 992px) {
+  .admin-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: relative;
+    width: 100%;
+  }
+
+  .sidebar-link {
+    justify-content: center;
+  }
+}
+.sidebar-group {
+  margin-top: 10px;
+}
+
+.sidebar-title {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  padding: 8px 15px;
+  letter-spacing: 0.5px;
+}
+
+.sub-link {
+  padding-left: 35px;
+  font-size: 0.95rem;
+}
+
+.sub-link i {
+  font-size: 1rem;
+}
+
+.toggle-menu {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.submenu {
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.submenu.open {
+  max-height: 300px;
+}
+
+.submenu a {
+  opacity: 0;
+  transform: translateY(-5px);
+  transition: all 0.3s ease;
+}
+
+.submenu.open a {
+  opacity: 1;
+  transform: translateY(0);
+}
+

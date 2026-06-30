@@ -1,0 +1,244 @@
+<div class="perfil-container">
+  <div class="perfil-wrapper">
+
+    <aside class="perfil-sidebar">
+      <div class="user-card">
+        <div class="user-avatar-large">
+          {{ currentUser?.nombreCompleto?.charAt(0)?.toUpperCase() }}
+        </div>
+        <h3>{{ currentUser?.nombreCompleto }}</h3>
+        <p class="user-email">{{ perfilForm.get('correo')?.value }}</p>
+      </div>
+
+      <nav class="sidebar-menu">
+        <button class="menu-item" [class.active]="activeTab === 'perfil'" (click)="switchTab('perfil')">
+          <i class="bi bi-person-circle"></i> Mi Perfil
+        </button>
+
+        <button class="menu-item" [class.active]="activeTab === 'password'" (click)="switchTab('password')">
+          <i class="bi bi-shield-lock"></i> Cambiar Contraseña
+        </button>
+
+        <button class="menu-item" [class.active]="activeTab === 'pedidos'" (click)="switchTab('pedidos')">
+          <i class="bi bi-bag-check"></i> Mis Pedidos
+        </button>
+
+        <button class="menu-item logout" (click)="logout()">
+          <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+        </button>
+      </nav>
+    </aside>
+
+    <main class="perfil-content">
+
+      <div class="alert alert-success" *ngIf="successMessage">
+        {{ successMessage }}
+      </div>
+      <div class="alert alert-error" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <section *ngIf="activeTab === 'perfil'" class="content-section">
+        <h2 class="section-title">Mi Perfil</h2>
+        <p class="section-description">Actualiza tu información personal</p>
+
+        <form [formGroup]="perfilForm" (ngSubmit)="onUpdatePerfil()" class="form-perfil perfil-grid">
+
+          <div class="form-group">
+            <label>Nombres</label>
+            <input type="text" formControlName="nombres" class="form-input" placeholder="Juan">
+            <span class="error-text" *ngIf="perfilForm.get('nombres')?.invalid && perfilForm.get('nombres')?.touched">
+              Campo requerido
+            </span>
+          </div>
+
+          <div class="form-group">
+            <label>Apellidos</label>
+            <input type="text" formControlName="apellidos" class="form-input" placeholder="Pérez">
+            <span class="error-text"
+              *ngIf="perfilForm.get('apellidos')?.invalid && perfilForm.get('apellidos')?.touched">
+              Campo requerido
+            </span>
+          </div>
+
+          <div class="form-group">
+            <label>Correo Electrónico</label>
+            <input type="email" formControlName="correo" class="form-input" placeholder="ejemplo@correo.com">
+          </div>
+
+          <div class="form-group">
+            <label>Teléfono</label>
+            <input type="tel" formControlName="telefono" class="form-input" placeholder="987654321">
+            <span class="error-text" *ngIf="perfilForm.get('telefono')?.invalid && perfilForm.get('telefono')?.touched">
+              Ingresa un teléfono válido (9 dígitos)
+            </span>
+          </div>
+
+          <div class="form-group full-width">
+            <label>Dirección</label>
+            <input type="text" formControlName="direccion" class="form-input" placeholder="Av. Principal N° 123">
+            <span class="error-text"
+              *ngIf="perfilForm.get('direccion')?.invalid && perfilForm.get('direccion')?.touched">
+              Campo requerido
+            </span>
+          </div>
+
+          <div class="full-width">
+            <button type="submit" class="btn-submit" [disabled]="loading || perfilForm.invalid">
+              {{ loading ? 'Guardando...' : 'Guardar Cambios' }}
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <section *ngIf="activeTab === 'password'" class="content-section">
+        <h2 class="section-title">Cambiar Contraseña</h2>
+        <p class="section-description">Actualiza tu contraseña de forma segura</p>
+
+        <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()" class="form-perfil">
+          <div class="form-group">
+            <label>Contraseña Actual</label>
+            <div class="password-wrapper">
+              <input [type]="showCurrent ? 'text' : 'password'" formControlName="currentPassword" class="form-input">
+              <i class="bi" [class.bi-eye-slash]="!showCurrent" [class.bi-eye]="showCurrent"
+                (click)="showCurrent = !showCurrent"></i>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Nueva Contraseña</label>
+            <div class="password-wrapper">
+              <input [type]="showNew ? 'text' : 'password'" formControlName="newPassword" class="form-input">
+              <i class="bi" [class.bi-eye-slash]="!showNew" [class.bi-eye]="showNew" (click)="showNew = !showNew"></i>
+            </div>
+            <span class="error-text" *ngIf="passwordForm.get('newPassword')?.touched &&
+                    passwordForm.get('newPassword')?.errors?.['minlength']">
+              La contraseña debe tener mínimo **6 caracteres**
+            </span>
+          </div>
+
+          <div class="form-group">
+            <label>Confirmar Nueva Contraseña</label>
+            <div class="password-wrapper">
+              <input [type]="showConfirm ? 'text' : 'password'" formControlName="confirmPassword" class="form-input">
+              <i class="bi" [class.bi-eye-slash]="!showConfirm" [class.bi-eye]="showConfirm"
+                (click)="showConfirm = !showConfirm"></i>
+            </div>
+            <span class="error-text" *ngIf="passwordForm.get('confirmPassword')?.errors?.['mismatch']">
+              Las contraseñas no coinciden
+            </span>
+          </div>
+
+          <button type="submit" class="btn-submit" [disabled]="loading || passwordForm.invalid">
+            {{ loading ? 'Cambiando...' : 'Cambiar Contraseña' }}
+          </button>
+        </form>
+      </section>
+
+      <section *ngIf="activeTab === 'pedidos'" class="content-section">
+        <h2 class="section-title">Mis Pedidos</h2>
+        <p class="section-description">Historial de compras realizadas online</p>
+
+        <div *ngIf="pedidos.length === 0" class="empty-state-modern animate__animated animate__fadeIn">
+          <div class="empty-icon">
+            <i class="bi bi-bag-x"></i>
+          </div>
+
+          <h3 class="empty-title">Aún no tienes pedidos</h3>
+          <p class="empty-text">
+            Cuando realices una compra, podrás ver aquí el estado, detalles y fechas de entrega.
+          </p>
+
+          <button class="btn-explorar" routerLink="/productos">
+            <i class="bi bi-shop"></i> Ver Productos
+          </button>
+        </div>
+
+        <table *ngIf="pedidos.length > 0" class="tabla-pedidos">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Fecha Pedido</th>
+              <th>Estado</th>
+              <th>Método Entrega</th>
+              <th>Dirección</th>
+              <th>Fecha Programada</th>
+              <th>Total</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let p of pedidosPaginados; let i = index">
+              <td>{{ i + 1 }}</td>
+
+              <td>{{ p.fechaPedido | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td>
+                <span class="badge-estado" [ngClass]="{
+                    'estado-pendiente': p.estado === 'PENDIENTE',
+                    'estado-procesado': p.estado === 'PROCESADO',
+                    'estado-enviado': p.estado === 'ENVIADO',
+                    'estado-listo': p.estado === 'LISTO_PARA_RECOJO',
+                    'estado-entregado': p.estado === 'ENTREGADO',
+                    'estado-cancelado': p.estado === 'CANCELADO'
+                  }">
+                  {{ p.estado }}
+                </span>
+              </td>
+
+              <td>
+                <span class="badge" [ngClass]="{
+                    'badge-retiro': p.metodoEntrega === 'RETIRO_TIENDA',
+                    'badge-domicilio': p.metodoEntrega === 'DOMICILIO'
+                  }">
+                  {{ p.metodoEntrega }}
+                </span>
+              </td>
+
+              <td>{{ p.direccionEntrega }}</td>
+              <td>
+                <ng-container
+                  *ngIf="p.metodoEntrega === 'RETIRO_TIENDA' && !p.fechaEntregaProgramada; else fechaNormal">
+                  <span class="fecha-proceso">
+                    Fecha en proceso de programación
+                  </span>
+                </ng-container>
+
+                <ng-template #fechaNormal>
+                  <span>
+                    {{ p.fechaEntregaProgramada | date:'dd/MM/yyyy' }}
+                  </span>
+                </ng-template>
+              </td>
+
+              <td class="monto">S/ {{ p.total | number:'1.2-2' }}</td>
+
+              <td>
+                <button class="btn-detalle" (click)="verDetallePedido(p.idPedido)">
+                  <i class="bi bi-eye"></i> Ver
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="paginacion" *ngIf="totalPaginas > 1">
+          <button class="btn-page" [disabled]="paginaActual === 1" (click)="cambiarPagina(paginaActual - 1)">‹</button>
+
+          <button class="btn-page" *ngFor="let page of paginasArray" [class.activa]="page === paginaActual"
+            (click)="cambiarPagina(page)">
+            {{ page }}
+          </button>
+
+          <button class="btn-page" [disabled]="paginaActual === totalPaginas"
+            (click)="cambiarPagina(paginaActual + 1)">›</button>
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<app-detalle-pedido-cliente-modal *ngIf="pedidoSeleccionado" [pedido]="pedidoSeleccionado">
+</app-detalle-pedido-cliente-modal>

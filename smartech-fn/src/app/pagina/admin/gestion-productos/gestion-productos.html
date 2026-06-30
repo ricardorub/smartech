@@ -1,0 +1,177 @@
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Gestión de Productos</h2>
+            <p class="text-muted mb-0">Administra el catálogo, precios, fotos y categorías</p>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-primary btn-sm" (click)="abrirModalCategorias()">
+                <i class="bi bi-collection"></i> Gestionar Categorías
+            </button>
+            <button class="btn btn-primary btn-sm" (click)="abrirNuevoProducto()">
+                <i class="bi bi-plus-circle"></i> Nuevo Producto
+            </button>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-3">
+        <div class="card-body d-flex align-items-end flex-wrap gap-3">
+
+            <div class="flex-grow-1">
+                <label class="form-label small text-muted mb-1">Buscar por nombre</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control" placeholder="Ej. Galaxy, iPhone, Tablet..."
+                        [(ngModel)]="terminoBusqueda" (keyup.enter)="buscar()">
+                </div>
+            </div>
+
+            <div style="min-width:200px">
+                <label class="form-label small text-muted mb-1">Categoría</label>
+                <select class="form-select" [(ngModel)]="categoriaFiltro" (change)="buscar()">
+                    <option [ngValue]="''">Todas</option>
+                    <option *ngFor="let c of categorias" [ngValue]="c.idCategoria">
+                        {{ c.nombreCategoria }}
+                    </option>
+                </select>
+            </div>
+            <div class="d-flex gap-2 align-items-end">
+                <button class="btn btn-outline-secondary btn-sm h-38" (click)="limpiarFiltros()">
+                    Limpiar
+                </button>
+
+                <button class="btn btn-primary btn-sm h-38" (click)="buscar()">
+                    Aplicar filtros
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+
+            <div *ngIf="loading" class="p-4 text-center text-muted">
+                <div class="spinner-border spinner-border-sm me-2"></div>
+                Cargando productos...
+            </div>
+
+            <table class="table table-hover align-middle mb-0" *ngIf="!loading">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        <th class="text-end">Precio</th>
+                        <th class="text-center">Descuento</th>
+                        <th class="text-center">Garantía</th>
+                        <th class="text-center">Activo</th>
+                        <th class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let p of productos; let i = index">
+                        <td>{{ (paginaActual - 1) * tamanioPagina + i + 1 }}</td>
+
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <img [src]="p.imagenUrlProducto" class="img-producto" alt="producto">
+                                <div>
+                                    <strong>{{ p.nombreProducto }}</strong>
+                                    <div class="text-muted small">
+                                        {{ p.descripcionProducto }}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td>
+                            <span class="badge bg-light text-dark border">
+                                {{ p.categoria.nombreCategoria }}
+                            </span>
+                        </td>
+
+                        <td class="text-end">
+                            S/ {{ p.precioProducto | number:'1.2-2' }}
+                        </td>
+
+                        <td class="text-center">
+                            <span class="badge bg-soft-warning text-black fw-semibold">
+                                {{ p.descuentoProducto }}%
+                            </span>
+                        </td>
+
+                        <td class="text-center">
+                            <span class="badge bg-soft-primary text-primary fw-semibold">
+                                {{ p.garantiaProducto }} meses
+                            </span>
+                        </td>
+
+                        <td class="text-center">
+                            <div class="form-check form-switch d-inline-flex align-items-center justify-content-center">
+                                <input class="form-check-input" type="checkbox" [checked]="p.estadoProducto === 1"
+                                    (change)="toggleActivo(p)">
+                            </div>
+                        </td>
+
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-outline-primary me-1" (click)="editarProducto(p)">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                        </td>
+                    </tr>
+
+                    <tr *ngIf="!productos.length && !loading">
+                        <td colspan="8" class="text-center text-muted py-4">
+                            No se encontraron productos.
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+            <div class="p-3 border-top d-flex justify-content-between align-items-center">
+                <div class="text-muted small">
+                    Mostrando {{ productos.length }} de {{ totalRegistros }} registros
+                </div>
+
+                <nav *ngIf="totalRegistros > tamanioPagina">
+                    <ul class="pagination pagination-sm mb-0">
+                        <li class="page-item" [class.disabled]="paginaActual === 1">
+                            <button class="page-link" (click)="cambiarPagina(paginaActual - 1)">
+                                <i class="bi bi-chevron-left"></i>
+                            </button>
+                        </li>
+                        <li class="page-item" *ngFor="let p of paginas" [class.active]="paginaActual === p">
+
+                            <button class="page-link" (click)="cambiarPagina(p)">
+                                {{ p }}
+                            </button>
+
+                        </li>
+
+                        <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
+                            <button class="page-link" (click)="cambiarPagina(paginaActual + 1)">
+                                <i class="bi bi-chevron-right"></i>
+                            </button>
+                        </li>
+
+                    </ul>
+                </nav>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+<app-producto-modal *ngIf="mostrarModalProducto" [producto]="productoSeleccionado" [categorias]="categorias"
+    (cerrar)="mostrarModalProducto = false" (guardar)="guardarProducto($event)">
+</app-producto-modal>
+
+<app-categorias-modal *ngIf="mostrarModalCategorias" (cerrar)="mostrarModalCategorias = false"
+    (actualizar)="categoriasActualizadas()">
+</app-categorias-modal>

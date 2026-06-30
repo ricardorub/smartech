@@ -1,0 +1,138 @@
+<div class="container-roles p-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="titulo fw-bold text-dark">Administración y Asignación de Roles</h2>
+      <p class="subtitulo text-muted">Gestione los perfiles de los usuarios y asigne los accesos y permisos correspondientes.</p>
+    </div>
+    <button class="btn btn-primary rounded-4 px-4 shadow-sm" (click)="abrirModalCrear()">
+      <i class="bi bi-person-plus me-2"></i> Nuevo Usuario
+    </button>
+  </div>
+
+  <!-- Buscador -->
+  <div class="filtro-container shadow-sm p-3 rounded-4 mb-4 bg-white">
+    <div class="row">
+      <div class="col-12 col-md-6">
+        <div class="input-group">
+          <span class="input-group-text bg-light border-0"><i class="bi bi-search"></i></span>
+          <input type="text" class="form-control bg-light border-0 search-input" 
+                 placeholder="Buscar usuario por nombre o username..." 
+                 [(ngModel)]="filtroNombre" 
+                 (keyup)="filtrarYAgrupar()" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Columnas por Rol -->
+  <div class="row g-4">
+    <div class="col-12 col-xl-4" *ngFor="let rol of rolesDetails">
+      <div class="card h-100 border-0 shadow-sm rounded-4 role-board-card">
+        
+        <!-- Cabecera de la Tarjeta del Rol -->
+        <div class="card-header border-0 rounded-top-4 p-4" [ngClass]="rol.colorClass">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="d-flex align-items-center">
+              <span class="fs-4 me-2"><i class="bi" [class]="rol.icon"></i></span>
+              <h5 class="mb-0 fw-bold">{{ rol.title }}</h5>
+            </div>
+            <span class="badge rounded-pill px-3 py-2 fw-semibold" [class]="rol.badgeClass">
+              {{ usersByRole[rol.name]?.length || 0 }} {{ (usersByRole[rol.name]?.length === 1) ? 'Usuario' : 'Usuarios' }}
+            </span>
+          </div>
+          <p class="mb-0 role-desc opacity-75 small">{{ rol.description }}</p>
+        </div>
+
+        <!-- Lista de Usuarios con este Rol -->
+        <div class="card-body p-4 bg-light rounded-bottom-4">
+          <div class="user-list-scroll">
+            
+            <div *ngIf="!usersByRole[rol.name] || usersByRole[rol.name].length === 0" 
+                 class="text-center py-5 text-muted">
+              <i class="bi bi-people fs-1 opacity-25"></i>
+              <p class="mt-2 mb-0 small">Sin usuarios asignados</p>
+            </div>
+
+            <!-- Tarjeta de Usuario Individual -->
+            <div class="card border-0 shadow-xs mb-3 rounded-3 user-item-card transition-all" 
+                 *ngFor="let u of usersByRole[rol.name]">
+              <div class="card-body p-3">
+                <div class="d-flex align-items-center">
+                  
+                  <!-- Avatar e Iniciales -->
+                  <div class="avatar-circle me-3 bg-secondary-subtle text-secondary fw-bold">
+                    {{ u.persona.nombres.charAt(0) }}{{ u.persona.apellidos.charAt(0) }}
+                  </div>
+
+                  <!-- Información del Usuario -->
+                  <div class="flex-grow-1 min-w-0">
+                    <h6 class="mb-1 text-truncate fw-bold text-dark">{{ u.persona.nombres }} {{ u.persona.apellidos }}</h6>
+                    <p class="mb-1 text-muted small text-truncate">@{{ u.usuario }}</p>
+                    <span class="badge bg-secondary-subtle text-secondary rounded-pill font-monospace small-badge">
+                      <i class="bi bi-shop me-1"></i>{{ u.tienda.nombre }}
+                    </span>
+                  </div>
+
+                  <!-- Botón de Acción -->
+                  <button class="btn btn-outline-primary btn-sm rounded-circle p-2 ms-2 action-btn shadow-sm"
+                          (click)="abrirModalAsignar(u)"
+                          title="Cambiar Rol">
+                    <i class="bi bi-shield-shaded"></i>
+                  </button>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para Asignar Rol -->
+<div class="modal fade show d-block modal-backdrop-custom" tabindex="-1" *ngIf="modalAsignarVisible">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
+      
+      <div class="modal-header border-0 bg-primary text-white p-4">
+        <h5 class="modal-title fw-bold">Modificar Rol de Usuario</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="cerrarModalAsignar()"></button>
+      </div>
+
+      <div class="modal-body p-4 bg-light">
+        <div class="text-center mb-4">
+          <div class="avatar-circle-lg mx-auto mb-3 bg-primary-subtle text-primary fw-bold fs-3">
+            {{ usuarioSeleccionado?.persona?.nombres?.charAt(0) }}{{ usuarioSeleccionado?.persona?.apellidos?.charAt(0) }}
+          </div>
+          <h5 class="fw-bold mb-1 text-dark">{{ usuarioSeleccionado?.persona?.nombres }} {{ usuarioSeleccionado?.persona?.apellidos }}</h5>
+          <p class="text-muted small mb-0">@{{ usuarioSeleccionado?.usuario }}</p>
+        </div>
+
+        <div class="form-group mb-3">
+          <label class="form-label fw-bold text-secondary">Seleccione el Nuevo Rol</label>
+          <select class="form-select modern-select p-3" [(ngModel)]="nuevoRolSeleccionado">
+            <option value="ADMIN">Administrador</option>
+            <option value="EMPLEADO">Empleado (Vendedor)</option>
+            <option value="ALMACENERO">Almacenero</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-footer border-0 p-4 bg-light d-flex justify-content-end gap-2">
+        <button class="btn btn-secondary px-4 rounded-3" (click)="cerrarModalAsignar()">Cancelar</button>
+        <button class="btn btn-primary px-4 rounded-3 fw-bold" 
+                [disabled]="nuevoRolSeleccionado === usuarioSeleccionado?.rolUsuario"
+                (click)="guardarNuevoRol()">
+          Guardar Cambios
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<app-usuario-modal-admin *ngIf="modalCrearVisible" (guardado)="cerrarModalCrear()">
+</app-usuario-modal-admin>

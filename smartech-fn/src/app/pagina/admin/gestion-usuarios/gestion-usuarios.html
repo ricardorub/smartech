@@ -1,0 +1,122 @@
+<div class="container-gestion">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h2 class="titulo">Gestión de Usuarios</h2>
+      <p class="subtitulo">Administra usuarios internos, roles y tiendas asignadas</p>
+    </div>
+    <button class="btn btn-primary rounded-4 px-4 shadow-sm" (click)="abrirModalCrear()">
+      <i class="bi bi-person-plus me-2"></i> Nuevo Usuario
+    </button>
+  </div>
+  <div class="filtro-container shadow-sm p-3 rounded-4 mb-4">
+
+    <div class="row g-3">
+      <div class="col-md-5">
+        <input type="text" class="form-control" placeholder="Buscar por nombre o DNI..." [(ngModel)]="filtroNombre" />
+      </div>
+
+      <div class="col-md-3">
+        <select class="form-select" [(ngModel)]="filtroRol">
+          <option value="">Todos los roles</option>
+          <option *ngFor="let r of roles" [value]="r">{{ r }}</option>
+        </select>
+      </div>
+
+      <div class="col-md-3">
+        <select class="form-select" [(ngModel)]="filtroTienda">
+          <option [ngValue]="null">Todas las tiendas</option>
+          <option *ngFor="let t of tiendas" [ngValue]="t.idTienda">
+            {{ t.nombre }}
+          </option>
+        </select>
+      </div>
+
+
+      <div class="col-md-1 d-flex">
+        <button class="btn btn-primary w-100" (click)="buscarUsuarios()">Filtrar</button>
+      </div>
+    </div>
+  </div>
+
+  <table class="table table-hover align-middle">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Usuario</th>
+        <th>Nombre</th>
+        <th>Rol</th>
+        <th>Tienda</th>
+        <th>Activo</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let u of usuarios; let i = index">
+        <td>{{ (pagina - 1) * pageSize + i + 1 }}</td>
+
+        <td>
+          <strong>{{ u.usuario }}</strong>
+          <br>
+          <small class="text-muted">{{ u.persona.dni }}</small>
+        </td>
+
+        <td>
+          {{ u.persona.nombres }} {{ u.persona.apellidos }}
+          <br>
+          <small class="text-muted">{{ u.persona.correo }}</small>
+        </td>
+
+        <td>
+          <span class="badge bg-primary">{{ u.rolUsuario }}</span>
+        </td>
+
+        <td>
+          <span class="badge bg-secondary">{{ u.tienda.nombre }}</span>
+        </td>
+
+        <td>
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" [checked]="u.activo"
+              (change)="cambiarEstado(u.idUsuarioInterno)">
+          </div>
+        </td>
+
+        <td>
+          <button class="btn btn-outline-primary btn-sm me-2" (click)="abrirModalEditar(u)">
+            <i class="bi bi-pencil"></i>
+          </button>
+          <button class="btn btn-outline-success btn-sm ms-2" (click)="verEstadisticas(u)">
+            <i class="bi bi-bar-chart"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <nav class="mt-3">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" [class.disabled]="pagina === 1">
+        <button class="page-link" (click)="pagina = pagina - 1; buscarUsuarios()">‹</button>
+      </li>
+
+      <li *ngFor="let p of totalPaginasArray" class="page-item" [class.active]="p === pagina">
+        <button class="page-link" (click)="pagina = p; buscarUsuarios()">{{ p }}</button>
+      </li>
+
+      <li class="page-item" [class.disabled]="pagina === totalPaginas">
+        <button class="page-link" (click)="pagina = pagina + 1; buscarUsuarios()">›</button>
+      </li>
+    </ul>
+  </nav>
+</div>
+
+<app-usuario-modal-admin *ngIf="modalCrear" (guardado)="cerrarModales()">
+</app-usuario-modal-admin>
+
+<app-usuario-modal-admin *ngIf="modalEditar" [usuarioEditar]="usuarioSeleccionado" (guardado)="cerrarModales()">
+</app-usuario-modal-admin>
+
+<app-estadistica-modal-admin *ngIf="modalEstadisticasVisible" [usuario]="usuarioSeleccionado"
+  [cerrar]="cerrarModalEstadisticas.bind(this)">
+</app-estadistica-modal-admin>

@@ -1,0 +1,186 @@
+<div class="modal-overlay" *ngIf="isVisible" (click)="closeModal()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="closeModal()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+
+    <div class="modal-body-custom">
+      <div class="logo-section">
+        <div class="logo-circle"><span class="logo-text">Smart</span></div>
+        <h2 class="welcome-text">
+          {{
+          mode === 'login' ? 'Bienvenido de nuevo' :
+          mode === 'register' ? 'Únete a Smart Tech' :
+          'Actualiza tu contraseña'
+          }}
+        </h2>
+      </div>
+
+      <div class="user-type-toggle" *ngIf="mode === 'login'">
+        <button [class.active]="userType === 'CLIENTE'" (click)="switchUserType('CLIENTE')"
+          class="toggle-btn">Cliente</button>
+        <button [class.active]="userType === 'ADMIN'" (click)="switchUserType('ADMIN')"
+          class="toggle-btn">Administrador</button>
+      </div>
+
+      <div class="alert alert-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+      <div class="alert alert-success" *ngIf="successMessage">{{ successMessage }}</div>
+      <div class="alert alert-warning" *ngIf="tempPasswordMessage" [innerHTML]="tempPasswordMessage"></div>
+      <form *ngIf="mode === 'login'" [formGroup]="loginForm" (ngSubmit)="onLogin()">
+
+        <div class="form-group">
+          <label>{{ userType === 'CLIENTE' ? 'Correo Electrónico' : 'Usuario' }}</label>
+
+          <input type="text" formControlName="email" autocomplete="username" class="form-input"
+            [placeholder]="userType === 'CLIENTE' ? 'tu@email.com' : 'usuario'">
+
+          <div class="error-text" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+            {{ userType === 'CLIENTE' ? 'Ingresa un correo válido' : 'Ingresa tu usuario' }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Contraseña</label>
+
+          <div class="password-wrapper">
+            <input [type]="showPassword ? 'text' : 'password'" formControlName="password"
+              autocomplete="current-password" placeholder="••••••••">
+
+            <span class="eye-icon" role="button"
+              [attr.aria-label]="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+              (click)="showPassword = !showPassword">
+              <i class="bi" [class.bi-eye-slash]="!showPassword" [class.bi-eye]="showPassword"></i>
+            </span>
+          </div>
+
+          <div class="error-text" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+            La contraseña debe tener al menos 4 caracteres
+          </div>
+        </div>
+
+        <button type="submit" class="submit-btn" [disabled]="loading || loginForm.invalid">
+          {{ loading ? 'Iniciando sesión...' : 'Iniciar Sesión' }}
+        </button>
+
+        <div class="switch-mode" *ngIf="userType === 'CLIENTE'">
+          ¿No tienes cuenta?
+          <a (click)="switchMode('register')">Regístrate aquí</a>
+        </div>
+
+      </form>
+
+      <form *ngIf="mode === 'register'" [formGroup]="registerForm" (ngSubmit)="onRegister()">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nombres</label>
+            <input type="text" formControlName="nombres_cliente" class="form-input" placeholder="Juan">
+            <div class="error-text"
+              *ngIf="registerForm.get('nombres_cliente')?.invalid && registerForm.get('nombres_cliente')?.touched">
+              Ingresa tu nombre
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Apellidos</label>
+            <input type="text" formControlName="apellidos_cliente" class="form-input" placeholder="Pérez">
+            <div class="error-text"
+              *ngIf="registerForm.get('apellidos_cliente')?.invalid && registerForm.get('apellidos_cliente')?.touched">
+              Ingresa tus apellidos
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Tipo de Documento</label>
+            <select class="form-input" formControlName="tipoDocumento_cliente">
+              <option value="" disabled>Seleccione</option>
+              <option value="DNI">DNI</option>
+              <option value="CE">Carnet de Extranjería</option>
+              <option value="PAS">Pasaporte</option>
+            </select>
+            <div class="error-text"
+              *ngIf="registerForm.get('tipoDocumento_cliente')?.invalid && registerForm.get('tipoDocumento_cliente')?.touched">
+              Selecciona un tipo de documento
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Número de Documento</label>
+            <input type="text" formControlName="numeroDocumento_cliente" class="form-input" placeholder="Ej: 76543210">
+            <div class="error-text"
+              *ngIf="registerForm.get('numeroDocumento_cliente')?.invalid && registerForm.get('numeroDocumento_cliente')?.touched">
+              Ingresa un número válido
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Correo Electrónico</label>
+          <input type="email" formControlName="correo_cliente" class="form-input" placeholder="tu@email.com">
+          <div class="error-text"
+            *ngIf="registerForm.get('correo_cliente')?.invalid && registerForm.get('correo_cliente')?.touched">
+            Ingresa un correo válido
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Teléfono</label>
+          <input type="tel" formControlName="telefono_cliente" class="form-input" placeholder="987654321">
+          <div class="error-text"
+            *ngIf="registerForm.get('telefono_cliente')?.invalid && registerForm.get('telefono_cliente')?.touched">
+            Teléfono de 9 dígitos
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Dirección</label>
+          <input type="text" formControlName="direccion_cliente" class="form-input" placeholder="Av. Principal 123">
+          <div class="error-text"
+            *ngIf="registerForm.get('direccion_cliente')?.invalid && registerForm.get('direccion_cliente')?.touched">
+            Ingresa tu dirección
+          </div>
+        </div>
+
+        <button type="submit" class="submit-btn" [disabled]="loading || registerForm.invalid">
+          {{ loading ? 'Registrando...' : 'Registrarse' }}
+        </button>
+
+        <div class="switch-mode">
+          ¿Ya tienes cuenta?
+          <a (click)="switchMode('login')">Inicia sesión aquí</a>
+        </div>
+      </form>
+
+
+      <form *ngIf="mode === 'force-change'" [formGroup]="changePassForm" (ngSubmit)="onChangePassword()">
+        <p class="mb-2">Por seguridad, debes establecer una nueva contraseña.</p>
+
+        <div class="form-group">
+          <label>Nueva contraseña</label>
+          <input type="password" formControlName="newPassword" class="form-input" placeholder="••••••••">
+        </div>
+
+        <div class="form-group">
+          <label>Confirmar contraseña</label>
+          <input type="password" formControlName="confirmPassword" class="form-input" placeholder="••••••••">
+          <div class="error-text" *ngIf="changePassForm.errors?.['notMatch']">Las contraseñas no coinciden</div>
+        </div>
+
+        <button class="submit-btn" type="submit" [disabled]="loading || changePassForm.invalid">
+          {{ loading ? 'Actualizando...' : 'Guardar contraseña' }}
+        </button>
+
+        <div class="switch-mode">
+          ¿Deseas volver?
+          <a (click)="mode='login'">Regresar al inicio de sesión</a>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>

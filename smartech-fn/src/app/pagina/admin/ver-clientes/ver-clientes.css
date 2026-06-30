@@ -1,0 +1,19 @@
+.title {
+  font-weight: 600;
+  color: #2a2d3e;
+}
+
+.filter-card {
+  background: #fff;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  display: flex;
+  gap: 10px;
+}
+
+.badge {
+  font-size: 0.85rem;
+  padding: 8px 12px;
+  border-radius: 8px;
+}

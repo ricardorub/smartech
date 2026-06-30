@@ -1,0 +1,116 @@
+.modal-card {
+  background: #ffffff;
+  border-radius: 20px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.info-item {
+  background: #f8fafc;
+  padding: 12px 16px;
+  border-radius: 12px;
+}
+
+.info-item.full-row {
+  grid-column: span 2;
+}
+
+.label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #888;
+  margin-bottom: 2px;
+}
+
+.estado-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #ff9800, #ffb74d);
+  color: #fff;
+  font-weight: 700;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+}
+
+.metodo-text {
+  font-weight: 600;
+}
+
+.direccion-text {
+  font-weight: 500;
+  color: #444;
+}
+
+.tabla-detalle {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.tabla-detalle th {
+  background: #f1f3f5;
+  padding: 12px;
+  font-size: 13px;
+  text-transform: uppercase;
+  color: #555;
+}
+
+.tabla-detalle td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  vertical-align: middle;
+}
+
+.producto-flex {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.img-producto {
+  width: 55px;
+  height: 55px;
+  object-fit: contain;
+  border-radius: 10px;
+  border: 1px solid #eee;
+  background: #fff;
+}
+
+.producto-nombre {
+  font-weight: 700;
+}
+
+.producto-desc {
+  display: block;
+  font-size: 12px;
+  color: #777;
+}
+
+.resumen-box {
+  margin-top: 1.5rem;
+  padding: 16px;
+  background: #fff3e0;
+  border-radius: 15px;
+}
+
+.resumen-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.total-final {
+  color: #ff6f00;
+}
+
+@media (max-width: 768px) {
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+}

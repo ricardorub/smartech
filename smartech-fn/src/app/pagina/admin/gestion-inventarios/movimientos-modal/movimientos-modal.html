@@ -1,0 +1,64 @@
+<div class="modal fade" id="modalMovimiento" tabindex="-1" aria-labelledby="modalMovimientoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content shadow-lg border-0 rounded-4">
+
+      <!-- Header -->
+      <div class="modal-header bg-primary text-white rounded-top-4">
+        <h5 class="modal-title fw-bold" id="modalMovimientoLabel">
+          ➕ Registrar Movimiento de Inventario
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body px-4 py-4">
+
+        <div class="alert alert-info d-flex align-items-center shadow-sm" role="alert">
+          <i class="bi bi-box-seam-fill fs-4 me-3"></i>
+          <div>
+            <b>{{ inventarioSeleccionado?.producto?.nombreProducto }}</b><br>
+            <small class="text-muted">Stock actual: {{ inventarioSeleccionado?.cantidad }}</small>
+          </div>
+        </div>
+
+        <form>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Cantidad</label>
+            <input type="number" class="form-control form-control-lg rounded-3" [(ngModel)]="cantidad" name="cantidad"
+              min="1" placeholder="Ej. 5" required />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Tipo de Movimiento</label>
+            <select class="form-select form-select-lg rounded-3" [(ngModel)]="tipoMovimiento" name="tipoMovimiento"
+              required>
+              <option value="" disabled selected>Seleccionar...</option>
+              <option value="ENTRADA">Entrada</option>
+              <option value="SALIDA">Salida</option>
+              <option value="AJUSTE">Ajuste</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Motivo</label>
+            <textarea class="form-control rounded-3" rows="3" [(ngModel)]="motivo" name="motivo"
+              placeholder="Ej. Ajuste por inventario, devolución, corrección..." required></textarea>
+          </div>
+
+        </form>
+      </div>
+
+      <div class="modal-footer d-flex justify-content-between px-4 pb-4">
+
+        <button type="button" class="btn btn-outline-secondary px-4 py-2 rounded-3" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+
+        <button type="button" class="btn btn-success px-4 py-2 rounded-3 fw-bold" (click)="guardarMovimiento()">
+          Guardar Movimiento
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

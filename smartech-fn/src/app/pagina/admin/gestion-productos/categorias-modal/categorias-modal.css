@@ -1,0 +1,41 @@
+.text-orange {
+  color: #f7931e;
+}
+
+.btn-orange {
+  background: linear-gradient(135deg, #f7931e, #e67e00);
+  border: none;
+  color: #fff;
+}
+
+.btn-orange:hover {
+  background: linear-gradient(135deg, #e67e00, #d35400);
+}
+
+.btn-outline-orange {
+  border: 1px solid #f7931e;
+  color: #f7931e;
+}
+
+.btn-outline-orange:hover {
+  background-color: #f7931e;
+  color: #fff;
+}
+
+.modal-card {
+  border-radius: 1.2rem;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #fff7ef;
+}
+
+.form-control {
+  border-radius: 0.8rem;
+  font-size: 0.9rem;
+}
+
+.page-item.active .page-link {
+  background-color: #f7931e;
+  border-color: #f7931e;
+}

@@ -1,0 +1,133 @@
+<div class="modal fade" id="modalInventario" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content rounded-4 shadow-lg border-0">
+
+            <div class="modal-header bg-primary text-white rounded-top-4">
+                <h5 class="modal-title d-flex align-items-center gap-2">
+                    <i class="bi bi-box-seam"></i>
+                    Nuevo Inventario
+                </h5>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body p-4">
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">
+                        <i class="bi bi-shop me-1"></i> Seleccionar Tienda
+                    </label>
+                    <select class="form-select rounded-3 shadow-sm" [(ngModel)]="tiendaSeleccionada"
+                        (change)="cambiarTienda()">
+                        <option value="0">-- Seleccione --</option>
+                        <option *ngFor="let t of tiendas" [value]="t.idTienda">
+                            {{ t.nombre }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                        <span class="input-group-text bg-light border-0">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input class="form-control border-0" placeholder="Buscar producto..." [(ngModel)]="filtro"
+                            (input)="filtrar()">
+                    </div>
+                </div>
+
+                <div class="card shadow-sm border-0 rounded-4 mb-4">
+                    <div class="table-responsive">
+                        <table class="table align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr class="text-muted small text-uppercase">
+                                    <th class="text-center" style="width:60px">Sel.</th>
+                                    <th style="width:80px">Imagen</th>
+                                    <th>Producto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <tr *ngFor="let p of productosPaginados" class="hover-row">
+                                    <td class="text-center">
+                                        <input type="checkbox" class="form-check-input"
+                                            [checked]="productoSeleccionado?.idProducto === p.idProducto"
+                                            [disabled]="isDisabled(p)" (change)="seleccionarProducto(p,$event)">
+                                    </td>
+
+                                    <td>
+                                        <img [src]="p.imagenUrlProducto" class="rounded-3 shadow-sm border" width="55"
+                                            height="55" style="object-fit:cover;">
+                                    </td>
+
+                                    <td class="fw-semibold">
+                                        {{ p.nombreProducto }}
+                                    </td>
+                                </tr>
+
+                                <tr *ngIf="productosPaginados.length === 0">
+                                    <td colspan="3" class="text-center text-muted py-4">
+                                        <i class="bi bi-inbox fs-4 d-block mb-2"></i>
+                                        Sin productos disponibles
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <span class="text-muted small">
+                        Página {{ currentPage }} / {{ totalPages }}
+                    </span>
+
+                    <div class="btn-group shadow-sm">
+                        <button class="btn btn-sm btn-outline-secondary" (click)="cambiarPagina(currentPage-1)"
+                            [disabled]="currentPage===1">
+                            ‹ Anterior
+                        </button>
+
+                        <button class="btn btn-sm btn-outline-secondary" (click)="cambiarPagina(currentPage+1)"
+                            [disabled]="currentPage===totalPages">
+                            Siguiente ›
+                        </button>
+                    </div>
+                </div>
+
+                <div *ngIf="productoSeleccionado" class="card border-0 shadow-sm rounded-4 p-4 bg-light-subtle">
+
+                    <h6 class="fw-bold d-flex align-items-center gap-2 mb-3">
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                        Producto seleccionado:
+                        <span class="text-primary">{{ productoSeleccionado.nombreProducto }}</span>
+                    </h6>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Cantidad Inicial</label>
+                            <input type="number" class="form-control rounded-3 shadow-sm" [(ngModel)]="cantidad"
+                                name="cantidad" required min="1">
+
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Stock Mínimo</label>
+                            <input type="number" class="form-control rounded-3 shadow-sm" [(ngModel)]="stockMinimo"
+                                name="stockMinimo" required min="1">
+
+                        </div>
+                    </div>
+
+                    <button class="btn btn-success w-100 mt-4 rounded-3 shadow-sm fw-bold" (click)="guardar()"
+                        [disabled]="!cantidad || !stockMinimo || cantidad < 1 || stockMinimo < 1">
+                        <i class="bi bi-save me-1"></i>
+                        Guardar Inventario
+                    </button>
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

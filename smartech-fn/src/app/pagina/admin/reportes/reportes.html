@@ -1,0 +1,105 @@
+<div class="container-fluid py-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-primary">
+      <i class="bi bi-file-bar-graph"></i> Reportes del Sistema
+    </h2>
+  </div>
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary text-white">
+      <i class="bi bi-funnel"></i> Filtros de búsqueda
+    </div>
+
+    <div class="card-body">
+      <div class="row gy-3">
+
+        <div class="col-md-3">
+          <label class="form-label">Fecha Inicio</label>
+          <input type="date" class="form-control" [(ngModel)]="filtroFechaInicio">
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label">Fecha Fin</label>
+          <input type="date" class="form-control" [(ngModel)]="filtroFechaFin">
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label">Tienda</label>
+          <select class="form-select" [(ngModel)]="filtroTienda">
+            <option value="">Todas</option>
+            <option *ngFor="let t of tiendas" [value]="t.idTienda">
+              {{ t.nombre }}
+            </option>
+          </select>
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label">Tipo de Reporte</label>
+          <select class="form-select" [(ngModel)]="tipoReporte">
+            <option value="ventas">Ventas</option>
+            <option value="productos">Productos</option>
+            <option value="clientes">Clientes</option>
+            <option value="pagos">Pagos</option>
+            <option value="inventario">Inventario</option>
+          </select>
+        </div>
+
+      </div>
+
+      <div class="text-end mt-3">
+        <button class="btn btn-primary" (click)="generarReporte()">
+          <i class="bi bi-search"></i> Generar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm">
+
+    <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+      <span><i class="bi bi-table"></i> Resultados del Reporte</span>
+
+      <div>
+        <button class="btn btn-success btn-sm me-2" (click)="exportarExcel()" [disabled]="!datos || datos.length === 0">
+          <i class="bi bi-file-earmark-excel"></i> Excel
+        </button>
+
+        <button class="btn btn-danger btn-sm" (click)="exportarPDF()" [disabled]="!datos || datos.length === 0">
+          <i class="bi bi-file-earmark-pdf"></i> PDF
+        </button>
+      </div>
+    </div>
+
+    <div class="card-body p-0">
+
+      <div *ngIf="!datos || datos.length === 0" class="text-center py-5">
+        <i class="bi bi-emoji-neutral fs-1 text-muted"></i>
+        <p class="text-muted mt-2">No hay resultados disponibles</p>
+      </div>
+
+      <div *ngIf="datos && datos.length > 0" class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+
+          <thead class="table-dark">
+            <tr>
+              <th *ngFor="let col of columnas">{{ col }}</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let item of datos">
+              <td *ngFor="let col of columnas">
+                {{ item[col] }}
+              </td>
+            </tr>
+          </tbody>
+
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+

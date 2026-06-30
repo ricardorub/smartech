@@ -1,0 +1,186 @@
+.container-roles {
+  background-color: #f4f6f9;
+  min-height: 100vh;
+}
+
+.titulo {
+  font-size: 28px;
+  color: #212529;
+}
+
+.subtitulo {
+  font-size: 15px;
+}
+
+.filtro-container {
+  border-radius: 16px;
+  background-color: #ffffff;
+}
+
+.search-input {
+  border-radius: 0 10px 10px 0;
+}
+
+.input-group-text {
+  border-radius: 10px 0 0 10px;
+}
+
+/* Tableros de Roles */
+.role-board-card {
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Colores específicos de roles - Desactivados y cambiados a colores de texto neutros estándar */
+.role-admin,
+.role-empleado,
+.role-almacenero {
+  background: #ffffff !important;
+  color: #212529 !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.role-desc {
+  font-weight: 400;
+  line-height: 1.4;
+  color: #6c757d !important;
+}
+
+.user-list-scroll {
+  max-height: 480px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+/* Scrollbar personalizado */
+.user-list-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.user-list-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.user-list-scroll::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.user-list-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* Tarjeta de usuario individual */
+.user-item-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.user-item-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.transition-all {
+  transition: all 0.25s ease-in-out;
+}
+
+/* Avatares */
+.avatar-circle {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.avatar-circle-lg {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.small-badge {
+  font-size: 11px;
+}
+
+.action-btn {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Modal */
+.modal-backdrop-custom {
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.modern-select {
+  border-radius: 12px;
+  border: 1px solid #ced4da;
+}
+
+.modern-select:focus {
+  border-color: #6c757d;
+  box-shadow: 0 0 0 0.25rem rgba(108, 117, 125, 0.25);
+}
+
+/* Cambiar colores primarios (azul) por gris */
+.container-roles .btn-primary,
+.modal-backdrop-custom .btn-primary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+}
+
+.container-roles .btn-primary:hover,
+.container-roles .btn-primary:focus,
+.container-roles .btn-primary:active,
+.modal-backdrop-custom .btn-primary:hover,
+.modal-backdrop-custom .btn-primary:focus,
+.modal-backdrop-custom .btn-primary:active {
+  background-color: #5a6268;
+  border-color: #545b62;
+  box-shadow: 0 0 0 0.25rem rgba(108, 117, 125, 0.25) !important;
+}
+
+.container-roles .btn-outline-primary,
+.modal-backdrop-custom .btn-outline-primary {
+  color: #6c757d;
+  border-color: #6c757d;
+}
+
+.container-roles .btn-outline-primary:hover,
+.container-roles .btn-outline-primary:active,
+.modal-backdrop-custom .btn-outline-primary:hover,
+.modal-backdrop-custom .btn-outline-primary:active {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: #fff;
+}
+
+.modal-backdrop-custom .bg-primary {
+  background-color: #6c757d !important;
+}
+
+.modal-backdrop-custom .text-primary,
+.modal-backdrop-custom .avatar-circle-lg.text-primary {
+  color: #6c757d !important;
+}
+
+.modal-backdrop-custom .avatar-circle-lg.bg-primary-subtle {
+  background-color: #e2e3e5 !important;
+}
+

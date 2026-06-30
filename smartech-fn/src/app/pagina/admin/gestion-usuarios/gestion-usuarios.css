@@ -1,0 +1,72 @@
+.container-gestion {
+  padding: 20px;
+}
+
+.titulo {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.subtitulo {
+  color: #6c757d;
+  margin-bottom: 20px;
+}
+
+.filtro-container {
+  background: #fff;
+}
+
+.badge {
+  font-size: 12px;
+  padding: 6px 10px;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f8f9fb;
+}
+
+.form-control,
+.form-select {
+  border-radius: 10px;
+}
+
+.btn-outline-primary,
+.btn-outline-danger,
+.btn-outline-success {
+  border-radius: 12px;
+}
+
+/* Cambiar colores primarios (azul) por gris */
+.container-gestion .btn-primary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+}
+
+.container-gestion .btn-primary:hover,
+.container-gestion .btn-primary:focus,
+.container-gestion .btn-primary:active {
+  background-color: #5a6268;
+  border-color: #545b62;
+  box-shadow: 0 0 0 0.25rem rgba(108, 117, 125, 0.25) !important;
+}
+
+.container-gestion .btn-outline-primary {
+  color: #6c757d;
+  border-color: #6c757d;
+}
+
+.container-gestion .btn-outline-primary:hover,
+.container-gestion .btn-outline-primary:active {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: #fff;
+}
+
+.container-gestion .bg-primary {
+  background-color: #6c757d !important;
+}
+
+.container-gestion .text-primary {
+  color: #6c757d !important;
+}
+

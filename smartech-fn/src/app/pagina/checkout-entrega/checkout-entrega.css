@@ -1,0 +1,62 @@
+
+:host {
+  display: block;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.option-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 15px;
+  border-radius: 15px;
+  border: 1px solid #eee;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.option-box:hover {
+  background-color: #fff7ef;
+  border-color: #ff9800;
+}
+
+.active-box {
+  border: 2px solid #ff9800;
+  background-color: #fff3e0;
+}
+
+.step-box {
+  display: flex;
+  align-items: center;
+  background-color: #f1f3f5;
+  padding: 10px 15px;
+  border-radius: 12px;
+}
+
+.active-step {
+  border: 1px dashed #ff9800;
+}
+
+.step-number {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background-color: #ff9800;
+  color: #fff;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Botón smart */
+.btn-warning {
+  background-color: #ff9800 !important;
+  border-color: #ff9800 !important;
+}
+
+.btn-warning:hover {
+  background-color: #fb8c00 !important;
+}

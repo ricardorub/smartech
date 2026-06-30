@@ -1,0 +1,162 @@
+<div class="modal-backdrop fade show" *ngIf="visible"></div>
+
+
+<div class="modal fade show d-block" tabindex="-1" *ngIf="visible">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content shadow-lg">
+
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title">Pedido #{{ pedido?.idPedido }}</h5>
+                <button type="button" class="btn-close btn-close-white" (click)="cerrarModal()"></button>
+            </div>
+            <div class="modal-body">
+
+                <div class="container-fluid">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-header bg-primary text-white">
+                                    Información del Cliente
+                                </div>
+                                <div class="card-body">
+                                    <p><strong>Cliente:</strong> {{ pedido?.clienteNombre }}</p>
+                                    <p><strong>Correo:</strong> {{ pedido?.clienteCorreo }}</p>
+                                    <p><strong>Dirección:</strong> {{ pedido?.direccionEntrega }}</p>
+                                    <p><strong>Telefono:</strong> {{ pedido?.clienteTelefono }}</p>
+                                    <p><strong>Método entrega:</strong> {{ pedido?.metodoEntrega }}</p>
+                                    <p><strong>Tienda:</strong> {{ pedido?.tienda }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-header bg-success text-white">
+                                    Estado de Pago
+                                </div>
+                                <div class="card-body">
+
+                                    <select class="form-select mb-3" [ngClass]="{
+                      'border-success': pedido?.estadoPago === 'Completado',
+                      'border-danger': pedido?.estadoPago === 'Rechazado' || pedido?.estadoPago === 'Anulado',
+                      'border-warning': pedido?.estadoPago === 'Pendiente'
+                    }" [disabled]="pedido?.estadoPago === 'Completado' ||
+                                pedido?.estadoPago === 'Anulado' ||
+                                !validarAcceso()" (change)="onEstadoPagoChange($event)">
+
+                                        <option *ngFor="let ep of estadosPago" [selected]="pedido?.estadoPago === ep"
+                                            [value]="ep">
+                                            {{ ep }}
+                                        </option>
+                                    </select>
+
+                                    <p><strong>Tipo Pago:</strong> {{ pedido?.tipoPago }}</p>
+                                    <p><strong>Referencia:</strong> {{ pedido?.referenciaPago }}</p>
+
+                                    <button *ngIf="pedido?.urlpdf" class="btn btn-outline-primary w-100"
+                                        (click)="verComprobante()">
+                                        Ver comprobante
+                                    </button>
+
+                                    <p *ngIf="!pedido?.urlpdf && pedido?.estadoPago !== 'Completado'"
+                                        class="text-muted mt-2 text-center">
+                                        Sin comprobante disponible
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-header bg-info text-white">
+                                    Estado del Pedido
+                                </div>
+
+                                <div class="card-body">
+
+                                    <select class="form-select mb-3" [ngClass]="{
+                      'border-warning': pedido?.estado === 'PENDIENTE',
+                      'border-primary': pedido?.estado === 'PROCESADO' || pedido?.estado === 'ENVIADO',
+                      'border-success': pedido?.estado === 'ENTREGADO',
+                      'border-dark': pedido?.estado === 'LISTO_PARA_RECOJO',
+                      'border-danger': pedido?.estado === 'CANCELADO'
+                    }" [disabled]="pedido?.estado === 'ENTREGADO' ||
+                                pedido?.estado === 'CANCELADO' ||
+                                !validarAcceso()" (change)="onEstadoChange($event)">
+
+                                        <option *ngFor="let e of estadosPedido" [selected]="pedido?.estado === e"
+                                            [value]="e">
+                                            {{ e }}
+                                        </option>
+                                    </select>
+
+                                    <p><strong>Entrega programada:</strong>
+                                        {{ pedido?.fechaEntregaProgramada | date:'dd/MM/yyyy' }}
+                                    </p>
+
+                                    <p><strong>Entrega real:</strong>
+                                        {{ pedido?.fechaEntregaReal ? (pedido?.fechaEntregaReal | date:'dd/MM/yyyy
+                                        HH:mm') : '—' }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-secondary text-white">
+                                    Observaciones
+                                </div>
+
+                                <div class="card-body">
+                                    <textarea class="form-control" rows="1" [(ngModel)]="observacion"></textarea>
+
+                                    <button class="btn btn-primary mt-3" (click)="guardarObservacion()">
+                                        Guardar Observación
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="card mt-4 border-0 shadow-sm">
+                    <div class="card-header bg-dark text-white">
+                        Productos del Pedido
+                    </div>
+
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-sm mb-0">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Cant.</th>
+                                        <th>Precio</th>
+                                        <th>Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let d of pedido?.detalles">
+                                        <td>{{ d.producto }}</td>
+                                        <td>{{ d.cantidad }}</td>
+                                        <td>S/ {{ d.precio }}</td>
+                                        <td>S/ {{ d.subtotal }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="p-3 text-end">
+                            <strong>Total: S/ {{ pedido?.total }}</strong>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
+            </div>
+
+        </div>
+    </div>
+</div>

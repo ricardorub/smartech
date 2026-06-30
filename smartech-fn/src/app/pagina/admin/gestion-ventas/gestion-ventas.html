@@ -1,0 +1,183 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="fw-bold mb-1">
+        <i class="bi bi-cart-check me-1 text-primary"></i>
+        Gestión de Ventas en Tienda
+      </h2>
+      <p class="text-muted mb-0">
+        Control administrativo de ventas físicas según rol asignado.
+      </p>
+    </div>
+
+    <button class="btn btn-primary shadow-sm" (click)="nuevaVenta()">
+      <i class="bi bi-plus-circle me-2"></i> Nueva Venta
+    </button>
+  </div>
+
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-body row g-3">
+
+      <!-- BUSCADOR -->
+      <div class="col-md-4">
+        <label class="form-label text-muted">Buscar</label>
+        <div class="input-group">
+          <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+          <input type="text" class="form-control" placeholder="Buscar por N° pedido, cliente o comentario..."
+            [(ngModel)]="filtroTexto" (keyup.enter)="aplicarFiltros()">
+        </div>
+      </div>
+
+      <!-- FILTRO TIENDAS SOLO PARA ADMIN -->
+      <div class="col-md-3" *ngIf="esAdmin">
+        <label class="form-label text-muted">Tienda</label>
+        <select class="form-select" [(ngModel)]="filtroTienda" (change)="aplicarFiltros()">
+          <option [ngValue]="null">Todas las tiendas</option>
+          <option *ngFor="let t of tiendas" [ngValue]="t.idTienda">
+            {{ t.nombre }}
+          </option>
+        </select>
+      </div>
+
+      <!-- FILTRO EMPLEADO SOLO ADMIN -->
+      <div class="col-md-3" *ngIf="esAdmin">
+        <label class="form-label text-muted">Empleado</label>
+        <select class="form-select" [(ngModel)]="filtroEmpleado" (change)="aplicarFiltros()">
+          <option [ngValue]="null">Todos los empleados</option>
+          <option *ngFor="let e of empleados" [ngValue]="e.idUsuarioInterno">
+            {{ e.persona?.nombres }} {{ e.persona?.apellidos }}
+          </option>
+        </select>
+      </div>
+
+      <!-- INFO TIENDA ASIGNADA SOLO EMPLEADO -->
+      <div class="col-md-3 d-flex flex-column" *ngIf="esEmpleado && tiendaEmpleadoActual">
+        <label class="form-label text-muted">Tienda asignada</label>
+        <span class="badge bg-primary-subtle text-primary border fw-semibold py-2">
+          <i class="bi bi-shop me-1"></i> {{ tiendaEmpleadoActual.nombre }}
+        </span>
+      </div>
+
+      <!-- BOTÓN LIMPIAR SOLO ADMIN (CORRECCIÓN CRÍTICA) -->
+      <div class="col-md-2 d-flex align-items-end justify-content-end" *ngIf="esAdmin">
+        <button class="btn btn-outline-secondary w-100"
+          (click)="filtroTexto=''; filtroTienda=null; filtroEmpleado=null; aplicarFiltros()">
+          <i class="bi bi-eraser me-1"></i> Limpiar
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SIN RESULTADOS -->
+  <div *ngIf="ventas.length === 0" class="text-center mt-5">
+    <div class="card p-4 shadow-sm mx-auto" style="max-width: 450px;">
+      <i class="bi bi-receipt-cutoff display-4 text-muted"></i>
+      <h4 class="mt-3 text-muted">No hay ventas registradas</h4>
+      <p class="text-secondary">
+        No se encontraron ventas con los filtros aplicados.
+      </p>
+    </div>
+  </div>
+
+  <!-- TABLA DE RESULTADOS -->
+  <div class="table-responsive" *ngIf="ventas.length > 0">
+    <table class="table table-hover align-middle shadow-sm rounded overflow-hidden">
+      <thead class="table-primary text-dark">
+        <tr>
+          <th>#</th>
+          <th>Fecha</th>
+          <th>N° Pedido</th>
+          <th>Tienda</th>
+          <th>Empleado</th>
+          <th>Cliente</th>
+          <th class="text-end">Total (S/)</th>
+          <th>Estado</th>
+          <th class="text-center">Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let v of ventas; let i = index">
+          <td>{{ (pagina - 1) * pageSize + (i + 1) }}</td>
+          <td>{{ v.fechaPedido | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td class="fw-semibold">#{{ v.idPedido }}</td>
+          <td>{{ v.nombreTienda }}</td>
+          <td>{{ v.nombreEmpleado }}</td>
+          <td>{{ v.clienteNombre }}</td>
+          <td class="text-end fw-bold">S/ {{ v.total | number:'1.2-2' }}</td>
+
+          <td>
+            <span class="badge px-3 py-2 fw-semibold" 
+              [ngClass]="{
+                'bg-success-subtle text-success border': v.estado === 'ENTREGADO',
+                'bg-warning-subtle text-warning border': v.estado === 'LISTO_P',
+                'bg-danger-subtle text-danger border': v.estado === 'CANCELADO',
+                'bg-secondary-subtle text-secondary border': v.estado !== 'ENTREGADO' && v.estado !== 'CANCELADO' && v.estado !== 'LISTO_P'
+              }">
+              {{ v.estado }}
+            </span>
+          </td>
+
+          <td class="text-center">
+            <button class="btn btn-sm btn-outline-primary me-1" (click)="abrirModalDetalle(v.idPedido)">
+              <i class="bi bi-eye"></i>
+            </button>
+
+            <button *ngIf="!v.urlpdf" class="btn btn-sm btn-outline-primary me-1" (click)="generarComprobante(v)">
+              <i class="bi bi-receipt"></i> Generar
+            </button>
+
+            <a *ngIf="v.urlpdf" class="btn btn-sm btn-success me-1" [href]="v.urlpdf" target="_blank">
+              <i class="bi bi-file-earmark-pdf"></i> Ver PDF
+            </a>
+
+            <button class="btn btn-sm btn-outline-danger" 
+                    (click)="anularVenta(v)"
+                    [disabled]="v.estado === 'CANCELADO'">
+              <i class="bi bi-x-circle"></i>
+            </button>
+          </td>
+
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PAGINACIÓN -->
+  <nav *ngIf="totalPaginas > 1" class="mt-3">
+    <ul class="pagination justify-content-end">
+      <li class="page-item" [class.disabled]="pagina === 1">
+        <button class="page-link" (click)="cambiarPagina(pagina - 1)">
+          <i class="bi bi-chevron-left"></i>
+        </button>
+      </li>
+
+      <li class="page-item" *ngFor="let p of totalPaginasArray" [class.active]="p === pagina">
+        <button class="page-link" (click)="cambiarPagina(p)">{{ p }}</button>
+      </li>
+
+      <li class="page-item" [class.disabled]="pagina === totalPaginas">
+        <button class="page-link" (click)="cambiarPagina(pagina + 1)">
+          <i class="bi bi-chevron-right"></i>
+        </button>
+      </li>
+    </ul>
+  </nav>
+
+</div>
+
+<!-- MODALES -->
+<app-nueva-venta-modal 
+  *ngIf="modalNuevaVentaVisible"
+  [esAdmin]="esAdmin"
+  [tiendas]="tiendas"
+  [tiendaEmpleado]="tiendaEmpleadoActual"
+  (cerrar)="cerrarModales()">
+</app-nueva-venta-modal>
+
+<app-detalle-venta-modal
+  *ngIf="mostrarDetalle && idVentaSeleccionada !== null"
+  [idPedido]="idVentaSeleccionada!"
+  (cerrar)="cerrarModalDetalle()">
+</app-detalle-venta-modal>

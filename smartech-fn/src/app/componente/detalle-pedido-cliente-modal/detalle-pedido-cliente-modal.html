@@ -1,0 +1,95 @@
+<div class="modal fade" id="detallePedidoModal" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content modal-card rounded-4 shadow-lg">
+
+      <!-- HEADER -->
+      <div class="modal-header border-0 pb-0">
+        <div>
+          <h5 class="modal-title fw-bold text-primary">
+            Pedido #{{ pedido.idPedido }}
+          </h5>
+          <small class="text-muted">
+            Realizado el {{ pedido.fechaPedido | date:'dd/MM/yyyy HH:mm' }}
+          </small>
+        </div>
+        <button type="button" class="btn-close" (click)="cerrar()"></button>
+      </div>
+
+      <!-- BODY -->
+      <div class="modal-body pt-3">
+
+        <!-- INFO GENERAL -->
+        <div class="info-grid mb-4">
+          <div class="info-item">
+            <span class="label">Estado</span>
+            <span class="estado-badge">{{ pedido.estado }}</span>
+          </div>
+
+          <div class="info-item">
+            <span class="label">Método de Entrega</span>
+            <span class="metodo-text">{{ pedido.metodoEntrega }}</span>
+          </div>
+
+          <div class="info-item full-row">
+            <span class="label">Dirección de Entrega</span>
+            <span class="direccion-text">{{ pedido.direccionEntrega }}</span>
+          </div>
+        </div>
+
+        <!-- TABLA PRODUCTOS -->
+        <div class="table-responsive">
+          <table class="tabla-detalle">
+            <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Precio</th>
+              <th>Cant.</th>
+              <th>Descuento</th>
+              <th>Subtotal</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let d of pedido.detalles">
+              <td class="producto-flex">
+                <img [src]="d.producto.imagenUrlProducto" class="img-producto">
+                <div>
+                  <div class="producto-nombre">{{ d.producto.nombreProducto }}</div>
+                  <small class="producto-desc">{{ d.producto.descripcionProducto }}</small>
+                </div>
+              </td>
+
+              <td>S/ {{ d.precioUnitario }}</td>
+              <td>{{ d.cantidad }}</td>
+              <td class="text-danger">- {{ d.descuento }} %</td>
+              <td class="fw-bold text-success">S/ {{ d.subtotal }}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- RESUMEN -->
+        <div class="resumen-box">
+          <div class="resumen-row">
+            <span>Total pago</span>
+            <span class="total-final">S/ {{ pedido.total }}</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- FOOTER -->
+      <div class="modal-footer border-0 pt-0">
+        <button *ngIf="pedido.comprobante?.pdfUrl"
+                (click)="verComprobante()"
+                class="btn btn-danger me-auto d-flex align-items-center gap-2">
+          <i class="bi bi-file-earmark-pdf"></i> Ver comprobante
+        </button>
+
+        <button class="btn btn-outline-secondary" (click)="cerrar()">
+          Cerrar
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

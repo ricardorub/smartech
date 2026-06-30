@@ -1,0 +1,37 @@
+.fondo-modal {
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(3px);
+}
+
+.modal-content {
+  border: none;
+}
+
+.form-label {
+  font-weight: 500;
+}
+
+h6 {
+  color: #2b2b2b;
+}
+.modern-input {
+  border-radius: 10px !important;
+  padding: 8px 12px !important;
+  border: 1.5px solid #d9d9d9;
+  transition: all 0.2s ease;
+}
+
+.modern-input:focus {
+  border-color: #4a82ff !important;
+  box-shadow: 0 0 0 3px rgba(74, 130, 255, 0.15);
+}
+
+.fondo-modal {
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  border-radius: 16px !important;
+  border: none !important;
+}

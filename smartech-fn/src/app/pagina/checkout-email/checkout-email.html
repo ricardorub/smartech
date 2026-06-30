@@ -1,0 +1,45 @@
+<div class="checkout-container">
+  <div class="stepper">
+    <span class="active">1</span> Carro <span>—</span>
+    <span>2</span> Entrega <span>—</span>
+    <span>3</span> Pago
+  </div>
+
+  <div class="checkout-box">
+    <h2>Ingresa tu correo electrónico para continuar</h2>
+    <p>Si ya tienes cuenta, inicia sesión. También puedes comprar como invitado.</p>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <label>Correo electrónico</label>
+      <input type="email" formControlName="correo" placeholder="tucorreo@dominio.com" />
+      <div class="error" *ngIf="form.get('correo')?.touched && form.get('correo')?.invalid">
+        Ingresa un correo válido
+      </div>
+
+      <button class="btn" type="submit" [disabled]="loading || form.invalid">
+        {{ loading ? 'Validando...' : 'Continuar' }}
+      </button>
+    </form>
+
+    <div class="alert-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+  </div>
+</div>
+
+<app-usuario-modal
+  *ngIf="showUserModal"
+  [isVisible]="showUserModal"
+  [presetEmail]="presetEmail"
+  [lockEmail]="lockEmail"
+  [fromCheckoutEmail]="true"
+  (cerrar)="cerrarUserModal()">
+</app-usuario-modal>
+
+<app-invitado-modal
+  *ngIf="showGuestModal"
+  [visible]="showGuestModal"
+  [data]="guestData"
+  (cerrar)="showGuestModal = false"
+  (guardado)="onGuestSaved()">
+</app-invitado-modal>
+
+

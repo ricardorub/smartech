@@ -1,0 +1,19 @@
+.card {
+  border-radius: 12px;
+}
+
+.table {
+  margin-bottom: 0 !important;
+}
+
+.table th, .table td {
+  white-space: nowrap;
+}
+
+.card-header {
+  font-weight: 600;
+}
+
+.btn {
+  font-weight: 500;
+}

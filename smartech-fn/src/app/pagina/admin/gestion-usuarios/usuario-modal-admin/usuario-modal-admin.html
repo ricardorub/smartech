@@ -1,0 +1,141 @@
+<div class="modal fade show d-block fondo-modal" tabindex="-1">
+
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow-lg">
+
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold">{{ titulo }}</h5>
+        <button type="button" class="btn-close" (click)="guardado.emit()"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <h6 class="mb-3 fw-bold text-primary">Datos de Cuenta</h6>
+
+        <div class="row g-3">
+
+          <div class="col-md-4">
+            <label class="form-label">Usuario <span class="text-danger">*</span></label>
+            <input type="text" class="form-control modern-input"
+                   [(ngModel)]="formulario.usuario"
+                   [ngClass]="{'is-invalid': formulario.usuario.trim()==''}">
+            <div class="invalid-feedback">El usuario es obligatorio.</div>
+          </div>
+
+          <div class="col-md-4" *ngIf="!usuarioEditar">
+            <label class="form-label">Contraseña <span class="text-danger">*</span></label>
+            <input type="password" class="form-control modern-input"
+                   [(ngModel)]="formulario.contrasenaUsuario"
+                   [ngClass]="{'is-invalid': formulario.contrasenaUsuario.trim()==''}">
+            <div class="invalid-feedback">La contraseña es obligatoria.</div>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">Rol <span class="text-danger">*</span></label>
+            <select class="form-select modern-input"
+                    [(ngModel)]="formulario.rolUsuario"
+                    [ngClass]="{'is-invalid': !formulario.rolUsuario}">
+              <option value="">Seleccione rol</option>
+              <option *ngFor="let r of roles" [value]="r">{{ r }}</option>
+            </select>
+            <div class="invalid-feedback">Debe seleccionar un rol.</div>
+          </div>
+
+        </div>
+
+        <hr class="my-4">
+
+        <h6 class="mb-3 fw-bold text-primary">Datos Personales</h6>
+
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <label class="form-label">Nombres <span class="text-danger">*</span></label>
+            <input type="text" class="form-control modern-input"
+                   [(ngModel)]="formulario.nombres"
+                   [ngClass]="{'is-invalid': formulario.nombres.trim()==''}">
+            <div class="invalid-feedback">Campo obligatorio.</div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Apellidos <span class="text-danger">*</span></label>
+            <input type="text" class="form-control modern-input"
+                   [(ngModel)]="formulario.apellidos"
+                   [ngClass]="{'is-invalid': formulario.apellidos.trim()==''}">
+            <div class="invalid-feedback">Campo obligatorio.</div>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">DNI <span class="text-danger">*</span></label>
+            <input type="text" maxlength="8" class="form-control modern-input"
+                   [(ngModel)]="formulario.dni"
+                   [ngClass]="{'is-invalid': formulario.dni.trim().length !== 8}">
+            <div class="invalid-feedback">El DNI debe tener 8 dígitos.</div>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">Correo <span class="text-danger">*</span></label>
+            <input type="email" class="form-control modern-input"
+                   [(ngModel)]="formulario.correo"
+                   [ngClass]="{'is-invalid': formulario.correo.trim()==''}">
+            <div class="invalid-feedback">Correo obligatorio.</div>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">Teléfono</label>
+            <input type="text" maxlength="9" class="form-control modern-input"
+                   [(ngModel)]="formulario.telefono">
+            <small class="text-muted">Opcional</small>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label">Dirección</label>
+            <input type="text" class="form-control modern-input"
+                   [(ngModel)]="formulario.direccion">
+            <small class="text-muted">Opcional</small>
+          </div>
+
+        </div>
+
+        <hr class="my-4">
+
+        <h6 class="mb-3 fw-bold text-primary">Asignación de Tienda</h6>
+
+        <div class="row">
+          <div class="col-md-12">
+            <label class="form-label">Tienda <span class="text-danger">*</span></label>
+            <select class="form-select modern-input"
+                    [(ngModel)]="formulario.idTienda"
+                    [ngClass]="{'is-invalid': !formulario.idTienda}">
+              <option [ngValue]="null">Seleccione tienda</option>
+              <option *ngFor="let t of tiendas" [ngValue]="t.idTienda">{{ t.nombre }}</option>
+            </select>
+            <div class="invalid-feedback">Debe seleccionar una tienda.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer border-0">
+        <button class="btn btn-secondary px-4" (click)="guardado.emit()">Cancelar</button>
+
+        <button class="btn btn-primary px-4"
+                [disabled]="
+                  formulario.usuario.trim()==='' ||
+                  (!usuarioEditar && formulario.contrasenaUsuario.trim()==='') ||
+                  formulario.rolUsuario==='' ||
+                  formulario.nombres.trim()==='' ||
+                  formulario.apellidos.trim()==='' ||
+                  formulario.dni.trim().length!==8 ||
+                  formulario.correo.trim()==='' ||
+                  !formulario.idTienda
+                "
+                (click)="guardar()">
+          Guardar Usuario
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div>

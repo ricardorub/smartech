@@ -1,0 +1,331 @@
+<div class="modal-backdrop">
+
+  <div class="modal-container animate shadow-lg rounded-4 p-4" style="max-width: 1200px; width: 95%;">
+
+    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-4">
+      <h3 class="m-0 fw-bold text-primary">Nueva venta en tienda</h3>
+      <button class="btn-close" (click)="cerrar.emit()"></button>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-3 col-md-4 border-end">
+        <div *ngIf="esAdmin" class="mb-3">
+          <label class="form-label fw-semibold">Tienda</label>
+          <select class="form-select rounded-3" [(ngModel)]="tiendaId">
+            <option [ngValue]="null">Seleccione...</option>
+            <option *ngFor="let t of tiendas" [ngValue]="t.idTienda">
+              {{ t.nombre }}
+            </option>
+          </select>
+        </div>
+
+        <div *ngIf="!esAdmin && tiendaEmpleado" class="mb-3">
+          <label class="form-label fw-semibold">Tienda asignada</label>
+          <div class="badge bg-primary px-3 py-2 fs-6">{{ tiendaEmpleado.nombre }}</div>
+        </div>
+      </div>
+
+      <div class="col-lg-7 col-md-8 ps-4">
+        <div class="mb-3 position-relative">
+          <label class="form-label fw-semibold">Buscar producto</label>
+
+          <div class="input-group">
+            <input type="text" class="form-control rounded-3" placeholder="Nombre, IMEI, descripción..."
+              [(ngModel)]="busqueda" (input)="buscarProducto()">
+          </div>
+
+          <div class="resultados shadow-sm border rounded-3 bg-white mt-1" *ngIf="resultados.length > 0"
+            style="max-height: 220px; overflow-y: auto;">
+            <div class="item p-2 hover-item rounded-3" *ngFor="let p of resultados" (click)="agregarProducto(p)">
+              <strong>{{ p.nombreProducto }}</strong>
+              <span class="text-muted">— S/ {{ p.precioProducto }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h5 class="fw-bold text-secondary border-bottom pb-2">Productos seleccionados</h5>
+
+    <div class="table-responsive mt-2" style="max-height: 300px; overflow-y: auto;">
+      <table class="table table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Prod.</th>
+            <th style="width: 70px;">Cant</th>
+            <th>Precio</th>
+            <th style="width: 90px;">Desc (%)</th>
+            <th style="width: 120px;">Desc (S/)</th>
+            <th>Subt</th>
+            <th style="width: 90px;">Stock</th>
+            <th style="width: 50px;"></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let p of productosPaginados; let i = index">
+            <td class="fw-semibold">{{ p.nombre }}</td>
+
+            <td>
+              <input type="number" min="0" [max]="p.stockDisponible" class="form-control rounded-3"
+                [(ngModel)]="p.cantidad" (change)="actualizarTotales(); eliminarSiCero(paginaOffset + i)">
+            </td>
+
+            <td>S/ {{ p.precio }}</td>
+
+            <td>
+              <input type="number" min="0" max="100" class="form-control rounded-3" [(ngModel)]="p.descuento"
+                (change)="actualizarTotales()">
+            </td>
+
+            <td class="text-danger fw-bold">
+              S/
+              {{
+              (p.precio * p.cantidad) * (p.descuento / 100)
+              | number:'1.2-2'
+              }}
+            </td>
+
+            <td class="fw-bold">
+              S/
+              {{
+              (p.precio * p.cantidad) -
+              ((p.precio * p.cantidad) * (p.descuento / 100))
+              | number:'1.2-2'
+              }}
+            </td>
+
+            <td class="fw-semibold text-primary">
+              {{ p.stockDisponible }}
+            </td>
+
+            <td class="text-center">
+              <button class="btn btn-sm btn-danger rounded-circle" (click)="quitarProducto(paginaOffset + i)">
+                <i class="bi bi-x-lg"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-2">
+
+      <button class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1" (click)="paginaAnterior()"
+        [disabled]="paginaActual === 1">
+        <i class="bi bi-chevron-left"></i> Anterior
+      </button>
+
+      <span class="fw-semibold">
+        Página {{ paginaActual }} de {{ totalPaginas }}
+      </span>
+
+      <button class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1" (click)="paginaSiguiente()"
+        [disabled]="paginaActual === totalPaginas">
+        Siguiente <i class="bi bi-chevron-right"></i>
+      </button>
+
+    </div>
+
+    <div class="bg-light p-2 rounded-3 border mt-3">
+      <div class="d-flex justify-content-between">
+        <span class="fw-semibold">Total bruto:</span>
+        <span>S/ {{ totalBruto | number:'1.2-2' }}</span>
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <span class="fw-semibold">Descuento total:</span>
+        <span class="text-danger">- S/ {{ totalDescuento | number:'1.2-2' }}</span>
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <span class="fw-semibold">Subtotal:</span>
+        <span>S/ {{ subtotal | number:'1.2-2' }}</span>
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <span class="fw-semibold">IGV (18%):</span>
+        <span>S/ {{ igv | number:'1.2-2' }}</span>
+      </div>
+
+      <div class="d-flex justify-content-between fs-5 fw-bold text-success">
+        <span>Total final:</span>
+        <span>S/ {{ totalFinal | number:'1.2-2' }}</span>
+      </div>
+    </div>
+
+    <h5 class="fw-bold text-secondary">Proceso de pago y comprobante</h5>
+
+    <div class="row g-4">
+      <div class="col-lg-3">
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Método</label>
+          <select class="form-select rounded-3" [(ngModel)]="pago.metodo_pago">
+            <option value="Efectivo">Efectivo</option>
+            <option value="Yape">Yape</option>
+            <option value="Plin">Plin</option>
+            <option value="Tarjeta_debito">Tarjeta Débito</option>
+            <option value="Tarjeta_credito">Tarjeta Crédito</option>
+            <option value="Transferencia">Transferencia</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Moneda</label>
+          <select class="form-select rounded-3" [(ngModel)]="pago.moneda">
+            <option value="PEN">Soles</option>
+            <option value="USD">Dólares</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-lg-3">
+        <div *ngIf="pago.metodo_pago === 'Efectivo'" class="pago-animado border rounded-3 p-3 bg-light">
+          <h6 class="fw-bold text-secondary">Pago en efectivo</h6>
+          <p class="small text-muted m-0">
+            El cliente pagará en caja.
+          </p>
+        </div>
+        <div *ngIf="pago.metodo_pago === 'Yape'" class="pago-animado border rounded-3 p-3 text-center">
+          <h6 class="fw-bold text-secondary mb-2">Pagar con Yape</h6>
+          <img src="https://res.cloudinary.com/dmzmm96ff/image/upload/v1764534617/qrpago_u5yrsd.png"
+            class="img-fluid rounded shadow-sm" style="max-width: 160px;">
+          <p class="small text-muted mt-2">Escanéa para completar el pago.</p>
+        </div>
+        <div *ngIf="pago.metodo_pago === 'Plin'" class="pago-animado border rounded-3 p-3 text-center">
+          <h6 class="fw-bold text-secondary mb-2">Pagar con Plin</h6>
+          <img src="https://res.cloudinary.com/dmzmm96ff/image/upload/v1764534617/qrpago_u5yrsd.png"
+            class="img-fluid rounded shadow-sm" style="max-width: 160px;">
+          <p class="small text-muted mt-2">Escanéa para completar el pago.</p>
+        </div>
+        <div *ngIf="pago.metodo_pago === 'Transferencia'" class="pago-animado border rounded-3 p-3">
+          <h6 class="fw-bold text-secondary">Transferencia bancaria</h6>
+
+          <p class="small text-muted">
+            Banco: BCP <br>
+            Cuenta: 123-45678901-0-12 <br>
+            CCI: 002123456789012345
+          </p>
+
+          <label class="form-label small fw-semibold">N° operación</label>
+          <input type="text" class="form-control form-control-sm" placeholder="Ej: 547892"
+            [(ngModel)]="pago.referencia_transaccion">
+        </div>
+        <div *ngIf="pago.metodo_pago === 'Tarjeta_debito' || pago.metodo_pago === 'Tarjeta_credito'"
+          class="pago-animado border rounded-3 p-3">
+          <h6 class="fw-bold text-secondary mb-2">
+            Pago con tarjeta
+            <span *ngIf="pago.metodo_pago === 'Tarjeta_credito'">Crédito</span>
+            <span *ngIf="pago.metodo_pago === 'Tarjeta_debito'">Débito</span>
+          </h6>
+
+          <div class="mb-2">
+            <label class="form-label small fw-semibold">Número de tarjeta</label>
+            <input [(ngModel)]="pago.numero_tarjeta" maxlength="16" class="form-control form-control-sm"
+              placeholder="**** **** **** ****">
+          </div>
+
+          <div class="row">
+            <div class="col-6 mb-2">
+              <label class="form-label small fw-semibold">Vencimiento</label>
+              <input [(ngModel)]="pago.vencimiento" maxlength="5" placeholder="MM/AA"
+                class="form-control form-control-sm">
+            </div>
+
+            <div class="col-6 mb-2">
+              <label class="form-label small fw-semibold">CVV</label>
+              <input [(ngModel)]="pago.cvv" maxlength="3" type="password" class="form-control form-control-sm"
+                placeholder="***">
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-sm w-100 mt-2" (click)="simularPagoTarjeta()">
+            <i class="bi bi-credit-card-fill me-1"></i> Simular Pago
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <div class="col-lg-3">
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Tipo Comprobante</label>
+          <select class="form-select rounded-3" [(ngModel)]="comprobante.tipo">
+            <option value="Boleta">Boleta</option>
+            <option value="Factura">Factura</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">N° Documento / RUC</label>
+          <input type="text" class="form-control rounded-3" [(ngModel)]="comprobante.numero_documento">
+        </div>
+      </div>
+
+      <div class="col-lg-3">
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Nombre cliente o Razón social</label>
+          <input type="text" class="form-control rounded-3" [(ngModel)]="comprobante.razon_social">
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-success w-100 py-2 fs-5 rounded-3 shadow-sm" (click)="abrirModalPago()"
+      [disabled]="formularioInvalido">
+      Registrar venta completa
+    </button>
+  </div>
+</div>
+
+
+<div class="modal-backdrop" *ngIf="mostrarModalPago">
+  <div class="modal-container shadow-lg rounded-4 p-4" style="max-width: 450px; width: 90%;">
+
+    <h4 class="fw-bold text-primary mb-3">Confirmar pago</h4>
+
+    <p class="text-muted mb-2">Método seleccionado:</p>
+    <div class="alert alert-primary d-flex align-items-center gap-2">
+      <i class="bi bi-wallet2 fs-5"></i>
+      <strong>{{ pago.metodo_pago }}</strong>
+    </div>
+    <div class="border rounded-3 p-3 pago-animado">
+      <div *ngIf="pago.metodo_pago === 'Efectivo'">
+        <p class="m-0 small text-muted">El cliente pagará en efectivo al finalizar.</p>
+      </div>
+      <div *ngIf="pago.metodo_pago === 'Yape'" class="text-center">
+        <img src="https://res.cloudinary.com/dmzmm96ff/image/upload/v1764534617/qrpago_u5yrsd.png"
+          style="max-width:200px" class="img-fluid rounded shadow-sm">
+        <p class="small mt-2 text-muted">Escanéa para completar el pago.</p>
+      </div>
+      <div *ngIf="pago.metodo_pago === 'Plin'" class="text-center">
+        <img src="https://res.cloudinary.com/dmzmm96ff/image/upload/v1764534617/qrpago_u5yrsd.png"
+          style="max-width:200px" class="img-fluid rounded shadow-sm">
+        <p class="small mt-2 text-muted">Escanéa para completar el pago.</p>
+      </div>
+      <div *ngIf="pago.metodo_pago === 'Transferencia'">
+        <p class="small text-muted m-0">
+          Banco BCP <br>
+          Cuenta: 123-45678901-0-12 <br>
+          CCI: 002123456789012345
+        </p>
+      </div>
+      <div *ngIf="pago.metodo_pago === 'Tarjeta_debito' || pago.metodo_pago === 'Tarjeta_credito'">
+        <p class="small text-muted mb-1">Procesando pago con tarjeta...</p>
+
+        <div class="border rounded-3 p-2 bg-light">
+          <p class="m-0 small">
+            <strong>N°:</strong> **** **** **** {{ pago.numero_tarjeta.slice(-4) }}
+          </p>
+          <p class="m-0 small"><strong>Venc:</strong> {{ pago.vencimiento }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex justify-content-end mt-4 gap-2">
+      <button class="btn btn-secondary" (click)="cerrarModalPago()">
+        <i class="bi bi-x-lg me-1"></i> Cancelar
+      </button>
+      <button class="btn btn-success" (click)="confirmarPagoFinal()">
+        <i class="bi bi-check2-circle me-1"></i> Confirmar
+      </button>
+    </div>
+  </div>
+</div>

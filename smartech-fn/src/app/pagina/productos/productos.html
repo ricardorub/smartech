@@ -1,0 +1,164 @@
+<div class="container py-4">
+
+  <h2 class="text-center text-primary fw-bold mb-1">{{ obtenerNombreCategoriaSeleccionada() }}</h2>
+  <h5 class="text-center mb-4">Variedad de Marcas y Modelos</h5>
+
+  <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
+    <button *ngFor="let cat of categorias" (click)="filtrarPorCategoria(cat.idCategoria)"
+      class="btn btn-outline-primary btn-sm" [class.active]="selectedCategoria === cat.idCategoria">
+      {{ cat.nombreCategoria }}
+    </button>
+    <button (click)="cargarTodos()" class="btn btn-secondary btn-sm" [class.active]="!selectedCategoria">
+      Todas
+    </button>
+  </div>
+  <div class="row justify-content-center mb-4">
+    <div class="col-md-6">
+      <div class="input-group">
+        <input type="text" class="form-control" [(ngModel)]="terminoBusqueda" (keyup.enter)="buscar()"
+          placeholder="Buscar producto..." />
+        <button class="btn btn-primary" type="button" (click)="buscar()">
+          Buscar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div *ngFor="let producto of productos" class="col-sm-6 col-md-4 col-lg-3">
+      <div class="card h-100 border-0 shadow-sm position-relative">
+
+        <span *ngIf="producto.descuentoProducto && producto.descuentoProducto > 0" class="badge-descuento">
+          -{{ producto.descuentoProducto }}%
+        </span>
+
+
+        <img [src]="producto.imagenUrlProducto && producto.imagenUrlProducto.trim() !== '' 
+          ? producto.imagenUrlProducto 
+          : 'https://res.cloudinary.com/dmzmm96ff/image/upload/v1764422285/no_image_zbwoiz.png'" (error)="producto.imagenUrlProducto = 'https://res.cloudinary.com/dmzmm96ff/image/upload/v1764422285/no_image_zbwoiz.png'"
+          class="card-img-top producto-img" [alt]="producto.nombreProducto" />
+
+
+        <div class="card-body">
+          <span class="badge bg-primary mb-2 text-uppercase">
+            {{ producto.categoria?.nombreCategoria || 'Sin categoría' }}
+          </span>
+          <h6 class="card-title fw-semibold">{{ producto.nombreProducto }}</h6>
+
+          <div class="mb-2">
+            <span *ngIf="producto.descuentoProducto && producto.descuentoProducto > 0" class="precio-original">
+              S/. {{ producto.precioProducto | number:'1.2-2' }}
+            </span>
+            <span class="precio-final text-success fw-bold">
+              S/. {{
+              calcularPrecioDescuento(producto.precioProducto, producto.descuentoProducto ?? 0)
+              | number:'1.2-2'
+              }}
+            </span>
+          </div>
+
+          <p class="small text-muted mb-3">{{ producto.descripcionProducto }}</p>
+        </div>
+
+        <div class="card-footer bg-transparent border-0 text-center d-flex flex-column gap-2">
+          <button class="btn btn-success w-100 btn-carrito" (click)="agregarAlCarrito(producto)">
+            <i class="bi bi-cart-plus"></i> Agregar al carrito
+          </button>
+
+          <button class="btn btn-ver-detalle w-100 py-2" (click)="abrirModal(producto)">
+            <i class="bi bi-eye me-1"></i> Ver detalle
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <div *ngIf="productos.length === 0" class="text-center text-muted py-5">
+      <p>No se encontraron productos disponibles.</p>
+    </div>
+  </div>
+  <div class="modal fade" id="detalleProductoModal" tabindex="-1" aria-labelledby="detalleProductoLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title" id="detalleProductoLabel">
+            {{ productoSeleccionado?.nombreProducto }}
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body p-4">
+          <div class="row g-3 align-items-center">
+            <div class="col-md-5 text-center">
+              <img [src]="productoSeleccionado?.imagenUrlProducto || 'https://res.cloudinary.com/dmzmm96ff/image/upload/v1764422285/no_image_zbwoiz.png'"
+                class="img-fluid rounded shadow-sm detalle-img" alt="{{ productoSeleccionado?.nombreProducto }}" />
+            </div>
+
+            <div class="col-md-7">
+              <p class="mb-2">
+                <strong>Categoría:</strong>
+                {{ productoSeleccionado?.categoria?.nombreCategoria || 'Sin categoría' }}
+              </p>
+              <p><strong>Descripción:</strong> {{ productoSeleccionado?.descripcionProducto }}</p>
+
+              <hr />
+
+              <p class="mb-1">
+                <strong>Precio:</strong>
+                <span *ngIf="productoSeleccionado?.descuentoProducto && productoSeleccionado?.descuentoProducto > 0"
+                  class="precio-original">
+                  S/. {{ productoSeleccionado?.precioProducto | number:'1.2-2' }}
+                </span>
+                <span class="precio-final text-success fw-bold">
+                  S/. {{
+                  calcularPrecioDescuento(
+                  productoSeleccionado?.precioProducto || 0,
+                  productoSeleccionado?.descuentoProducto ?? 0
+                  ) | number:'1.2-2'
+                  }}
+                </span>
+              </p>
+
+              <p *ngIf="productoSeleccionado?.descuentoProducto && productoSeleccionado?.descuentoProducto > 0">
+                <strong>Descuento:</strong> {{ productoSeleccionado?.descuentoProducto }}%
+              </p>
+              <p *ngIf="productoSeleccionado?.garantiaProducto">
+                <strong>Garantía:</strong> {{ productoSeleccionado?.garantiaProducto }} meses
+              </p>
+              <p *ngIf="productoSeleccionado?.imeiSerieProducto">
+                <strong>Serie/IMEI:</strong> {{ productoSeleccionado?.imeiSerieProducto }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button class="btn btn-success w-100 btn-carrito" (click)="agregarAlCarrito(productoSeleccionado)">
+            <i class="bi bi-cart-plus"></i> Agregar al carrito
+          </button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav *ngIf="totalPages > 1" class="d-flex justify-content-center mt-4">
+    <ul class="pagination pagination-sm">
+      <li class="page-item" [class.disabled]="page === 0">
+        <a class="page-link" (click)="cambiarPagina(page - 1)">Anterior</a>
+      </li>
+
+      <li *ngFor="let i of [].constructor(totalPages); let idx = index" class="page-item" [class.active]="idx === page">
+        <a class="page-link" (click)="cambiarPagina(idx)">
+          {{ idx + 1 }}
+        </a>
+      </li>
+
+      <li class="page-item" [class.disabled]="page === totalPages - 1">
+        <a class="page-link" (click)="cambiarPagina(page + 1)">Siguiente</a>
+      </li>
+    </ul>
+  </nav>
+</div>

@@ -1,0 +1,50 @@
+
+.navbar {
+  background-color: #fdf8f0 !important; 
+}
+
+
+.btn-orange {
+  background-color: #e67e22;
+  border: none;
+  transition: 0.3s;
+}
+.btn-orange:hover {
+  background-color: #cf711f;
+  color: #fff;
+}
+
+
+.nav-link {
+  color: #333 !important;
+  font-size: 1.3rem;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+.nav-link:hover {
+  color: #cf711f !important;
+}
+
+
+.nav-link i {
+  font-size: 1.4rem;
+  vertical-align: middle;
+}
+
+
+.navbar-brand img {
+  border: 2px solid #e67e22;
+}
+
+
+.navbar-toggler {
+  border: none;
+}
+.navbar-toggler:focus {
+  box-shadow: none;
+}
+
+
+.navbar {
+  min-height: 64px;
+}

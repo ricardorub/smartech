@@ -1,0 +1,156 @@
+<div class="modal-backdrop fade show"></div>
+
+<div class="modal fade show d-block" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content modal-card shadow-lg border-0">
+
+      <!-- HEADER -->
+      <div class="modal-header border-0 pb-1">
+        <div>
+          <h5 class="modal-title fw-bold text-orange">{{ titulo }}</h5>
+          <small class="text-muted">Información del producto</small>
+        </div>
+        <button type="button" class="btn-close" (click)="cerrarModal()"></button>
+      </div>
+
+      <form #formRef="ngForm" (ngSubmit)="onSubmit()">
+
+        <!-- BODY -->
+        <div class="modal-body pt-3">
+          <div class="row g-4">
+
+            <!-- NOMBRE -->
+            <div class="col-md-6">
+              <label class="form-label fw-semibold small">
+                Nombre del producto <span class="text-danger">*</span>
+              </label>
+              <input type="text"
+                     class="form-control form-control-sm rounded-3"
+                     [(ngModel)]="form.nombreProducto"
+                     name="nombreProducto"
+                     #nombre="ngModel"
+                     required
+                     placeholder="Ej: iPhone 15 Pro">
+              <small class="text-danger" *ngIf="nombre.invalid && nombre.touched">
+                Este campo es obligatorio
+              </small>
+            </div>
+
+            <!-- CATEGORIA -->
+            <div class="col-md-6">
+              <label class="form-label fw-semibold small">
+                Categoría <span class="text-danger">*</span>
+              </label>
+              <select class="form-select form-select-sm rounded-3"
+                      [(ngModel)]="form.categoriaId"
+                      name="categoriaId"
+                      #categoria="ngModel"
+                      required>
+                <option [ngValue]="null" disabled>Selecciona categoría</option>
+                <option *ngFor="let c of categorias" [ngValue]="c.idCategoria">
+                  {{ c.nombreCategoria }}
+                </option>
+              </select>
+              <small class="text-danger" *ngIf="categoria.invalid && categoria.touched">
+                Debes seleccionar una categoría
+              </small>
+            </div>
+
+            <!-- DESCRIPCIÓN -->
+            <div class="col-12">
+              <label class="form-label fw-semibold small">
+                Descripción
+              </label>
+              <textarea rows="3"
+                        class="form-control form-control-sm rounded-3"
+                        [(ngModel)]="form.descripcionProducto"
+                        name="descripcionProducto"
+                        placeholder="Descripción del producto..."></textarea>
+            </div>
+
+            <!-- PRECIO -->
+            <div class="col-md-4">
+              <label class="form-label fw-semibold small">
+                Precio <span class="text-danger">*</span>
+              </label>
+              <div class="input-group input-group-sm">
+                <span class="input-group-text">S/</span>
+                <input type="number"
+                       class="form-control rounded-end-3"
+                       min="0"
+                       [(ngModel)]="form.precioProducto"
+                       name="precioProducto"
+                       #precio="ngModel"
+                       required>
+              </div>
+              <small class="text-danger" *ngIf="precio.invalid && precio.touched">
+                El precio es obligatorio
+              </small>
+            </div>
+
+            <!-- DESCUENTO -->
+            <div class="col-md-4">
+              <label class="form-label fw-semibold small">Descuento (%)</label>
+              <input type="number"
+                     class="form-control form-control-sm rounded-3"
+                     min="0" max="100"
+                     [(ngModel)]="form.descuentoProducto"
+                     name="descuentoProducto">
+            </div>
+
+            <!-- GARANTÍA -->
+            <div class="col-md-4">
+              <label class="form-label fw-semibold small">Garantía (meses)</label>
+              <input type="number"
+                     class="form-control form-control-sm rounded-3"
+                     min="0"
+                     [(ngModel)]="form.garantiaProducto"
+                     name="garantiaProducto">
+            </div>
+
+            <!-- IMEI -->
+            <div class="col-md-6">
+              <label class="form-label fw-semibold small">IMEI / Serie</label>
+              <input type="text"
+                     class="form-control form-control-sm rounded-3"
+                     [(ngModel)]="form.imeiSerieProducto"
+                     name="imeiSerieProducto">
+            </div>
+
+            <!-- IMAGEN -->
+            <div class="col-md-6">
+              <label class="form-label fw-semibold small">Imagen del producto</label>
+              <input type="file"
+                     class="form-control form-control-sm rounded-3"
+                     (change)="onFileSelected($event)">
+            </div>
+
+            <!-- PREVIEW -->
+            <div class="col-12 text-center" *ngIf="previewImagen">
+              <label class="form-label small text-muted d-block">Vista previa</label>
+              <img [src]="previewImagen" class="img-preview rounded-3 shadow-sm">
+            </div>
+
+          </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="modal-footer border-0 pt-2">
+          <button type="button"
+                  class="btn btn-light btn-sm rounded-pill px-4"
+                  (click)="cerrarModal()">
+            <i class="bi bi-x-circle me-1"></i> Cancelar
+          </button>
+
+          <button type="submit"
+                  class="btn btn-orange btn-sm rounded-pill px-4 fw-semibold"
+                  [disabled]="formRef.invalid">
+            <i class="bi bi-save me-1"></i> Guardar
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,50 @@
+<!-- src/app/componente/invitado-modal/invitado-modal.html -->
+<div class="smart-overlay" *ngIf="visible"></div>
+
+<div class="smart-modal" *ngIf="visible">
+  <button class="btn-close-custom" (click)="cerrar.emit()">&times;</button>
+
+  <!-- Logo circular -->
+  <div class="smart-logo">Smart</div>
+
+  <h3 class="smart-title">Completemos tus datos</h3>
+  <p class="smart-subtitle">Solo para finalizar tu compra</p>
+
+  <form [formGroup]="form" (ngSubmit)="guardar()" class="smart-form">
+
+    <div class="form-floating mb-3">
+      <input type="email" class="form-control" formControlName="correo" readonly>
+      <label>Correo electrónico</label>
+    </div>
+
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" formControlName="nombres">
+      <label>Nombres</label>
+    </div>
+
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" formControlName="apellidos">
+      <label>Apellidos</label>
+    </div>
+
+    <div class="form-floating mb-3">
+      <input type="tel" class="form-control" formControlName="telefono">
+      <label>Teléfono</label>
+    </div>
+
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" formControlName="direccion">
+      <label>Dirección</label>
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-danger text-center small">
+      {{ errorMessage }}
+    </div>
+
+    <button type="submit"
+            class="smart-btn w-100 mt-2"
+            [disabled]="form.invalid || loading">
+      {{ loading ? 'Guardando...' : 'Continuar' }}
+    </button>
+  </form>
+</div>

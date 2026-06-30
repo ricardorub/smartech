@@ -1,0 +1,15 @@
+.text-purple {
+  color: #8000ff;
+}
+
+.card {
+  background: #ffffff;
+}
+
+img {
+  border-radius: 20px;
+}
+
+.alert {
+  font-size: 1.05rem;
+}

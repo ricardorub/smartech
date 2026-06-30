@@ -1,0 +1,65 @@
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(3px);
+  z-index: 900; 
+}
+
+
+.modal-container {
+  background: #ffffff;
+  width: 95%;
+  max-width: 620px;
+  padding: 10px;
+  border-radius: 18px;
+  animation: fadeIn 0.25s ease-out;
+  position: relative;
+  z-index: 901; 
+}
+
+
+.btn-close-custom {
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+
+.resultados {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  z-index: 902; 
+}
+
+.hover-item:hover {
+  background: #f3f7ff;
+  cursor: pointer;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pago-animado {
+  animation: fadeIn 0.25s ease-in-out;
+}

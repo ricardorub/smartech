@@ -1,0 +1,100 @@
+.img-producto {
+  width: 55px;
+  height: 55px;
+  object-fit: contain;     
+  border-radius: 10px;
+  background: #f8f9fa;
+  border: 1px solid #eaeaea;
+}
+
+
+td strong {
+  font-size: 14px;
+}
+
+td .text-muted {
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+
+.badge {
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 20px;
+}
+
+
+.bg-soft-warning {
+  background-color: rgba(255, 193, 7, 0.15);
+  border: 1px solid rgba(255, 193, 7, 0.4);
+}
+
+
+.bg-soft-primary {
+  background-color: rgba(13, 110, 253, 0.12);
+  border: 1px solid rgba(13, 110, 253, 0.4);
+}
+
+
+.input-group {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.input-group-text {
+  background-color: #f8f9fa;
+  border: none;
+}
+
+
+.form-select {
+  border-radius: 10px;
+}
+
+
+.form-check-input {
+  cursor: pointer;
+  width: 40px;
+  height: 20px;
+}
+
+.btn {
+  border-radius: 10px;
+}
+
+
+.table td, 
+.table th {
+  padding: 16px 12px;
+  vertical-align: middle;
+}
+
+.pagination .page-link {
+  border-radius: 10px;
+  min-width: 35px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.card {
+  border-radius: 16px;
+}
+
+.card-body {
+  padding: 20px;
+}
+.h-38 {
+  height: 38px;
+}
+
+.form-control,
+.form-select,
+.input-group-text {
+  height: 38px;
+}
+
+.input-group-text {
+  display: flex;
+  align-items: center;
+}

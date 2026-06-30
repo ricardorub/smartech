@@ -1,0 +1,66 @@
+.btn-outline-primary {
+  color: #0a64a0;
+  border-color: #0a64a0;
+}
+
+.btn-outline-primary:hover {
+  background-color: #0a64a0;
+  color: #fff;
+}
+
+.btn-outline-danger {
+  border-color: #c14418;
+  color: #c14418;
+}
+
+.btn-outline-danger:hover {
+  background-color: #c14418;
+  color: #fff;
+}
+
+.table {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.table th {
+  background-color: #0a64a0 !important;
+}
+
+.table td {
+  vertical-align: middle;
+}
+.btn-carrito-finalizar {
+  background-color: #0a64a0;
+  color: white;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 0.6rem 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.btn-carrito-finalizar:hover {
+  background-color: #084b7a;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(10, 100, 160, 0.3);
+}
+.swal2-popup {
+  border-radius: 14px !important;
+  font-family: 'Poppins', sans-serif;
+}
+
+.swal2-confirm {
+  background-color: #0a64a0 !important;
+  border-radius: 8px !important;
+  padding: 8px 20px !important;
+}
+
+.swal2-cancel {
+  background-color: #c14418 !important;
+  border-radius: 8px !important;
+  padding: 8px 20px !important;
+}
+
+.swal2-title {
+  font-weight: 600 !important;
+}

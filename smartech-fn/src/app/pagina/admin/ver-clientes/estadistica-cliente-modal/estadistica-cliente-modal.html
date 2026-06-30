@@ -1,0 +1,53 @@
+<div class="modal-backdrop-custom">
+    <div class="modal-container animate">
+
+        <div class="header">
+            <h3>
+                <i class="bi bi-graph-up-arrow icon-title"></i>
+                Estadísticas del Cliente
+            </h3>
+            <button class="btn-close" (click)="cerrar()"></button>
+        </div>
+
+        <div class="client-info">
+            <h5>{{ cliente.nombre }} {{ cliente.apellido }}</h5>
+            <p class="text-muted">{{ cliente.correo }}</p>
+        </div>
+
+        <div *ngIf="cargando" class="text-center p-4">
+            <div class="spinner-border text-primary"></div>
+            <p class="mt-3 text-muted">Cargando estadísticas...</p>
+        </div>
+        <div *ngIf="!cargando && (!datos || !datos.comprasPorMes || datos.comprasPorMes.length === 0)"
+            class="text-center p-4">
+            <i class="bi bi-bar-chart-steps display-4 text-muted"></i>
+            <h5 class="mt-3">Sin historial de compras</h5>
+            <p class="text-muted">Este cliente aún no realizó compras online.</p>
+        </div>
+        <ng-container *ngIf="!cargando && datos && datos.comprasPorMes?.length > 0">
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h6>Total comprado</h6>
+                    <strong>S/ {{ datos.totalComprado | number:'1.2-2' }}</strong>
+                </div>
+
+                <div class="stat-card">
+                    <h6>Compras realizadas</h6>
+                    <strong>{{ datos.cantidadCompras }}</strong>
+                </div>
+
+                <div class="stat-card" *ngIf="datos.ultimaCompra">
+                    <h6>Última compra</h6>
+                    <strong>{{ datos.ultimaCompra | date:'dd/MM/yyyy' }}</strong>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <canvas #chartComprasCanvas></canvas>
+            </div>
+
+        </ng-container>
+
+    </div>
+</div>

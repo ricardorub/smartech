@@ -1,0 +1,44 @@
+
+:host {
+  display: block;
+}
+
+:host ::ng-deep .modal-content {
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+}
+
+:host ::ng-deep .modal-header {
+  border-bottom: none;
+  padding: 20px 24px;
+  background: #f8f9fa;
+}
+
+:host ::ng-deep .modal-title {
+  font-weight: 700;
+  color: #212529;
+}
+
+:host ::ng-deep .form-control,
+:host ::ng-deep .form-select {
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+}
+
+:host ::ng-deep .form-control:focus,
+:host ::ng-deep .form-select:focus {
+  border-color: #ff8c00;
+  box-shadow: 0 0 0 2px rgba(255,140,0,0.1);
+}
+
+:host ::ng-deep .table {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+:host ::ng-deep .btn-success {
+  background-color: #198754;
+  border-radius: 12px;
+  font-weight: 600;
+}

@@ -1,0 +1,90 @@
+<div class="admin-layout">
+
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-circle">ST</div>
+      <h4 class="mb-0 fw-bold text-white">SmartTech</h4>
+      <small class="text-white-50">Panel Administrativo</small>
+    </div>
+
+    <nav class="nav flex-column mt-4">
+
+      <a routerLink="/admin/dashboard" routerLinkActive="active" class="sidebar-link">
+        <i class="bi bi-speedometer2"></i>
+        Dashboard
+      </a>
+
+      <div class="sidebar-group">
+        <div class="sidebar-title toggle-menu" (click)="toggleVentas()">
+          <i class="bi bi-bag-check"></i>
+          <span>Gestion de Ventas</span>
+
+          <i class="bi ms-auto"
+            [ngClass]="{ 'bi-chevron-down': !menuTiendaAbierto, 'bi-chevron-up': menuTiendaAbierto }">
+          </i>
+        </div>
+
+        <div class="submenu" [class.open]="menuTiendaAbierto">
+          <a routerLink="/admin/ventas" routerLinkActive="active" class="sidebar-link sub-link">
+            <i class="bi bi-bag-check"></i> Ventas Tienda Física
+          </a>
+
+          <a routerLink="/admin/online" routerLinkActive="active" class="sidebar-link sub-link">
+            <i class="bi bi-bag-check"></i> Ventas Online
+          </a>
+        </div>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-title toggle-menu" (click)="toggleInventarios()">
+          <i class="bi bi-box-seam"></i>
+          <span>Inventarios</span>
+
+          <i class="bi ms-auto"
+            [ngClass]="{ 'bi-chevron-down': !menuInventariosAbierto, 'bi-chevron-up': menuInventariosAbierto }">
+          </i>
+        </div>
+
+        <div class="submenu" [class.open]="menuInventariosAbierto">
+          <a routerLink="/admin/inventarios" routerLinkActive="active" class="sidebar-link sub-link">
+            <i class="bi bi-boxes"></i>
+            Gestión de Inventario
+          </a>
+          <a *ngIf="esAdmin" routerLink="/admin/productos" routerLinkActive="active" class="sidebar-link sub-link">
+            <i class="bi bi-tags"></i>
+            Gestión de Productos
+          </a>
+        </div>
+      </div>
+      <div class="sidebar-group" *ngIf="esAdmin">
+        <div class="sidebar-title toggle-menu" (click)="toggleUsuarios()">
+          <i class="bi bi-people"></i>
+          Gestión de Usuarios
+
+          <i class="bi ms-auto" [ngClass]="{ 'bi-chevron-down': !menuUsuariosAbierto,
+                          'bi-chevron-up': menuUsuariosAbierto }">
+          </i>
+        </div>
+
+        <div class="submenu" [class.open]="menuUsuariosAbierto">
+          <a routerLink="/admin/roles" routerLinkActive="active" class="sidebar-link sub-link">
+            <i class="bi bi-shield-lock"></i> Asignación de Roles
+          </a>
+
+          <a routerLink="/admin/cliente" routerLinkActive="active" class="sidebar-link sub-link">
+            <i class="bi bi-people"></i> Clientes
+          </a>
+        </div>
+      </div>
+
+      <a *ngIf="esAdmin" routerLink="/admin/reportes" routerLinkActive="active" class="sidebar-link">
+        <i class="bi bi-graph-up-arrow"></i>
+        Reportes
+      </a>
+
+    </nav>
+
+  </aside>
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

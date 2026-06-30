@@ -1,0 +1,188 @@
+<div class="container py-4">
+  <div class="row gx-4 justify-content-center">
+
+    <div class="col-lg-8">
+
+        <div class="card shadow-sm mb-4 p-4 rounded-4 border-0">
+            <h5 class="mb-3">Selecciona tu comprobante de pago</h5>
+
+            <div class="d-flex gap-3">
+                <label class="card p-3 flex-fill cursor-pointer" [class.border-warning]="tipoComprobante === 'Boleta'">
+                    <input type="radio" name="comprobante" [checked]="tipoComprobante==='Boleta'"
+                        (change)="seleccionarComprobante('Boleta')">
+                    Boleta
+                </label>
+
+                <label class="card p-3 flex-fill cursor-pointer" [class.border-warning]="tipoComprobante === 'Factura'">
+                    <input type="radio" name="comprobante" [checked]="tipoComprobante==='Factura'"
+                        (change)="seleccionarComprobante('Factura')">
+                    Factura
+                </label>
+            </div>
+
+            <form [formGroup]="formComprobante" class="mt-3" *ngIf="tipoComprobante === 'Factura'">
+                <div class="row g-2">
+                    <div class="col-md-6">
+                        <input formControlName="numero_documento" class="form-control" placeholder="RUC">
+                    </div>
+                    <div class="col-md-6">
+                        <input formControlName="razon_social" class="form-control" placeholder="Razón social">
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="card shadow-sm p-4 rounded-4 border-0">
+            <h5 class="mb-3">Selecciona tu método de pago</h5>
+
+            <div *ngFor="let m of metodos" class="mb-2">
+
+                <label class="card p-3 d-flex justify-content-between align-items-center cursor-pointer"
+                    [class.border-warning]="metodoSeleccionado === m"
+                    [class.opacity-50]="metodoSeleccionado && metodoSeleccionado !== m">
+
+                    <div class="d-flex align-items-center gap-2">
+                        <input type="radio" name="metodoPago" [checked]="metodoSeleccionado === m"
+                            (change)="seleccionarMetodo(m)">
+                        <strong>{{ m.replace('_', ' ') }}</strong>
+                    </div>
+
+                    <div class="d-flex gap-1 align-items-center">
+                        <img *ngIf="m.includes('Tarjeta')"
+                            src="https://res.cloudinary.com/dmzmm96ff/image/upload/v1763924814/visa_csvy4f.png"
+                            height="24">
+                        <img *ngIf="m.includes('Tarjeta')"
+                            src="https://res.cloudinary.com/dmzmm96ff/image/upload/v1763924814/mastercard_om0ppp.png"
+                            height="24">
+                        <img *ngIf="m==='Yape'"
+                            src="https://res.cloudinary.com/dmzmm96ff/image/upload//w_24,h_24,c_fit/v1763925615/yape_yohtqh.png"
+                            width="24" height="24">
+                        <img *ngIf="m==='Plin'"
+                            src="https://res.cloudinary.com/dmzmm96ff/image/upload//w_24,h_24,c_fit/v1763925593/plin_dqo6jh.png"
+                            width="24" height="24">
+                        <img *ngIf="m==='Efectivo'"
+                            src="https://res.cloudinary.com/dmzmm96ff/image/upload/w_64,h_24,c_fit/v1763925283/pagoefectivo_leo5om.png"
+                            width="64" height="24">
+                    </div>
+
+                </label>
+
+                <div *ngIf="metodoSeleccionado === m" class="card-body border rounded-bottom p-3 bg-light">
+                    <form *ngIf="m==='Tarjeta_credito' || m==='Tarjeta_debito'" [formGroup]="formPago">
+
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <input formControlName="numero_tarjeta" class="form-control"
+                                    placeholder="Número de tarjeta">
+                            </div>
+                            <div class="col-md-6">
+                                <input formControlName="nombre_tarjeta" class="form-control" placeholder="Titular">
+                            </div>
+                            <div class="col-md-6">
+                                <input formControlName="vencimiento" class="form-control" placeholder="MM/AA">
+                            </div>
+                            <div class="col-md-6">
+                                <input formControlName="cvv" type="password" class="form-control" placeholder="CVV">
+                            </div>
+                        </div>
+                    </form>
+
+                    <div *ngIf="m==='Efectivo'">
+                        <p class="fw-semibold mb-2">Para completar tu compra utilizando PagoEfectivo, sigue estos pasos:
+                        </p>
+                        <ol class="small">
+                            <li>Haz clic en el botón Finalizar Compra.</li>
+                            <li>Recibirás un e-mail con tu código CIP.</li>
+                            <li>Utiliza el código CIP para pagar en:</li>
+                        </ol>
+
+                        <p class="small fw-semibold mt-2">Banca Móvil e Internet:</p>
+                        <div class="d-flex flex-wrap gap-2 mb-2">
+                            <img src="https://i.ibb.co/VYnBWcPc/Cn-P-22052025-152446.png" height="30">
+                        </div>
+
+                        <p class="small fw-semibold">Agentes y bodegas:</p>
+                        <div class="d-flex flex-wrap gap-2 mb-2">
+                            <img src="https://res.cloudinary.com/dmzmm96ff/image/upload/v1763926142/western_qi4rns.png"
+                                height="30">
+                            <img src="https://res.cloudinary.com/dmzmm96ff/image/upload/v1763926105/kasnet_veksvl.png"
+                                height="30">
+                            <img src="https://logosenvector.com/logo/img/tambo-practi-tienda-562.jpg" height="30">
+                            <img src="https://i.ibb.co/VYnBWcPc/Cn-P-22052025-152446.png" height="30">
+                        </div>
+
+                        <ul class="small text-muted mt-2">
+                            <li>El código CIP tendrá una validez de 8 horas.</li>
+                            <li>Para “Llega hoy”, pagar antes de las 12:30 PM.</li>
+                            <li>Registrar el pago en plataforma virtual.</li>
+                        </ul>
+                    </div>
+
+                    <div *ngIf="m==='Yape'">
+                        <p class="fw-semibold mb-2">Paga fácilmente con Yape:</p>
+                        <ol class="small">
+                            <li>Haz clic en Finalizar Compra.</li>
+                            <li>Escanea el QR desde tu celular.</li>
+                        </ol>
+
+                        <div class="d-flex flex-wrap gap-2">
+                            <img src="https://res.cloudinary.com/dmzmm96ff/image/upload//w_40,h_40,c_fit/v1763925615/yape_yohtqh.png"
+                                width="40" height="40">
+                        </div>
+                    </div>
+
+                    <div *ngIf="m==='Plin'">
+                        <p class="fw-semibold mb-2">Paga fácilmente con Plin:</p>
+                        <ol class="small">
+                            <li>Haz clic en Finalizar Compra.</li>
+                            <li>Escanea el QR desde tu celular.</li>
+                        </ol>
+
+                        <div class="d-flex flex-wrap gap-2">
+                            <img src="https://res.cloudinary.com/dmzmm96ff/image/upload//w_40,h_40,c_fit/v1763925593/plin_dqo6jh.png"
+                                width="40" height="40">
+                        </div>
+                    </div>
+
+                    <div *ngIf="m==='Transferencia'">
+                        <small><b>BCP:</b> 123-4567890</small><br>
+                        <small><b>CCI:</b> 002-123456789000</small>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm p-4 rounded-4 border-0">
+            <h5>Resumen de compra</h5>
+
+            <div class="d-flex justify-content-between my-2">
+                <span>Productos</span>
+                <strong>S/ {{ total.toFixed(2) }}</strong>
+            </div>
+
+            <div class="d-flex justify-content-between my-2">
+                <span>Gastos de entrega</span>
+                <span class="text-success">GRATIS</span>
+            </div>
+
+            <hr>
+
+            <div class="d-flex justify-content-between fw-bold fs-5">
+                <span>Total</span>
+                <span>S/ {{ total.toFixed(2) }}</span>
+            </div>
+
+            <button class="btn btn-pago-finalizar rounded-pill px-3" (click)="finalizarCompra()">
+                Finalizar compra
+            </button>
+        </div>
+    </div>
+
+  </div>
+</div>

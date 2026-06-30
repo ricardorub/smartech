@@ -1,0 +1,195 @@
+<div class="container my-4">
+
+    <h2 class="fw-bold text-center mb-4">
+        Gestión de Ventas Online
+    </h2>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+
+            <div class="row g-3">
+
+                <div class="col-md-2">
+                    <input class="form-control"
+                           placeholder="ID Pedido"
+                           [(ngModel)]="filtroId"
+                           (input)="cargarPedidos()" />
+                </div>
+
+                <div class="col-md-2">
+                    <input class="form-control"
+                           placeholder="Cliente"
+                           [(ngModel)]="filtroCliente"
+                           (input)="cargarPedidos()" />
+                </div>
+
+                <div class="col-md-2">
+                    <select class="form-select" [(ngModel)]="filtroEstado" (change)="cargarPedidos()">
+                        <option value="">Estado</option>
+                        <option value="PENDIENTE">Pendiente</option>
+                        <option value="PROCESADO">Procesado</option>
+                        <option value="ENVIADO">Enviado</option>
+                        <option value="ENTREGADO">Entregado</option>
+                        <option value="CANCELADO">Cancelado</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <select class="form-select" [(ngModel)]="filtroMetodo" (change)="cargarPedidos()">
+                        <option value="">Método Entrega</option>
+                        <option value="RETIRO_TIENDA">Retiro tienda</option>
+                        <option value="DOMICILIO">Domicilio</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <input type="date" class="form-control"
+                           [(ngModel)]="filtroFechaInicio"
+                           (change)="cargarPedidos()" />
+                </div>
+
+                <div class="col-md-2">
+                    <input type="date" class="form-control"
+                           [(ngModel)]="filtroFechaFin"
+                           (change)="cargarPedidos()" />
+                </div>
+
+                <div class="col-md-3" *ngIf="esAdmin">
+                    <select class="form-select" [(ngModel)]="filtroTienda" (change)="cargarPedidos()">
+                        <option [ngValue]="null">Todas las tiendas</option>
+                        <option *ngFor="let t of tiendas" [ngValue]="t.idTienda">
+                            {{ t.nombre }}
+                        </option>
+                    </select>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="table-responsive shadow-sm">
+        <table class="table table-hover align-middle">
+
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Cliente</th>
+                    <th>Tienda</th>
+                    <th>Método</th>
+                    <th>Fecha</th>
+                    <th>Total</th>
+                    <th>Estado Pago</th>
+                    <th>Comprobante</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr *ngIf="pedidos.length === 0">
+                    <td colspan="9" class="text-center py-5">
+                        <div class="text-muted">
+                            <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                            <h5 class="fw-bold mb-1">No se encontraron resultados</h5>
+                            <p class="text-secondary">
+                                Ajusta los filtros o intenta nuevamente.
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+
+
+                <tr *ngFor="let p of pedidos">
+                    <td>{{ p.idPedido }}</td>
+                    <td>{{ p.clienteNombre }}</td>
+                    <td>{{ p.tienda }}</td>
+                    <td>{{ p.metodoEntrega }}</td>
+                    <td>{{ p.fechaPedido | date:'dd/MM/yyyy HH:mm' }}</td>
+                    <td>S/ {{ p.total | number:'1.2-2' }}</td>
+
+                    <td>
+                        <span class="badge px-3 py-2"
+                              [ngClass]="{
+                                'bg-success': p.estadoPago === 'COMPLETADO',
+                                'bg-warning text-dark': p.estadoPago !== 'COMPLETADO'
+                              }">
+                            {{ p.estadoPago }}
+                        </span>
+                    </td>
+
+                    <td>
+
+                        <button *ngIf="p.urlpdf"
+                                class="btn btn-sm btn-outline-primary"
+                                (click)="verComprobante(p.urlpdf)">
+                            <i class="bi bi-file-earmark-pdf"></i> Ver
+                        </button>
+
+                        <button *ngIf="!p.urlpdf && p.estadoPago === 'COMPLETADO'"
+                                class="btn btn-sm btn-outline-success"
+                                (click)="generarComprobanteModal(p.idPedido)">
+                            <i class="bi bi-plus-circle"></i> Generar
+                        </button>
+
+                        <span *ngIf="!p.urlpdf && p.estadoPago !== 'COMPLETADO'"
+                              class="text-muted fst-italic">
+                            No disponible
+                        </span>
+
+                    </td>
+
+                    <td>
+                        <button class="btn btn-sm btn-primary me-2"
+                                (click)="verDetalle(p)">
+                            <i class="bi bi-eye"></i>
+                        </button>
+
+                        <button class="btn btn-sm btn-danger"
+                                (click)="anularPedido(p)"
+                                [disabled]="p.estado === 'CANCELADO'">
+                            <i class="bi bi-x-circle"></i>
+                        </button>
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+    </div>
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+
+            <li class="page-item" [class.disabled]="pagina === 1">
+                <button class="page-link" (click)="cambiarPagina(pagina - 1)">
+                    ‹
+                </button>
+            </li>
+
+            <li class="page-item"
+                *ngFor="let num of paginasArray"
+                [class.active]="num === pagina">
+                <button class="page-link" (click)="cambiarPagina(num)">
+                    {{ num }}
+                </button>
+            </li>
+
+            <li class="page-item" [class.disabled]="pagina === totalPaginas">
+                <button class="page-link" (click)="cambiarPagina(pagina + 1)">
+                    ›
+                </button>
+            </li>
+
+        </ul>
+    </nav>
+
+</div>
+
+<app-detalle-pedido-online-modal
+  [visible]="modalVisible"
+  [pedido]="pedidoSeleccionado"
+  [esAdmin]="esAdmin"
+  [idEmpleadoActual]="idEmpleado"
+  (cerrar)="cerrarModal()"
+  (actualizar)="procesarAccion($event)">
+</app-detalle-pedido-online-modal>
