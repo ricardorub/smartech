@@ -15,8 +15,8 @@ services:
 
   backend:
     build:
-      context: ./SmarTech-bk
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: SmarTech-bk/Dockerfile
     container_name: smartech-backend
     restart: always
     ports:
