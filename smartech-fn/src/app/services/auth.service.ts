@@ -74,7 +74,7 @@ export interface ValidarCorreoResponse {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private base = 'http://localhost:8080/api/auth';
+  private base = '/api/auth';
 
   constructor(private http: HttpClient) {}
 

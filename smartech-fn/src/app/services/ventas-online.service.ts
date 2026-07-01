@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class VentasOnlineService {
-  private baseUrl = 'http://localhost:8080/api/ventas-online';
+  private baseUrl = '/api/ventas-online';
 
   constructor(private http: HttpClient) {}
 
@@ -39,7 +39,7 @@ export class VentasOnlineService {
   }
 
   listarTiendas(): Observable<any> {
-    return this.http.get<any>('http://localhost:8080/api/tiendas');
+    return this.http.get<any>('/api/tiendas');
   }
 
   actualizarEstadoPago(idPedido: number, estadoPago: string): Observable<any> {

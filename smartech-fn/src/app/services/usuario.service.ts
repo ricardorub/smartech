@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class UsuarioService {
 
-  private apiUrl = 'http://localhost:8080/api/private/usuarios';
+  private apiUrl = '/api/private/usuarios';
 
   constructor(private http: HttpClient) {}
 

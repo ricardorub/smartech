@@ -14,7 +14,7 @@ export interface Tienda {
 })
 export class TiendaService {
 
-  private apiUrl = 'http://localhost:8080/api/tiendas'; 
+  private apiUrl = '/api/tiendas';
 
   constructor(private http: HttpClient) {}
 

@@ -29,7 +29,7 @@ export interface InvitadoDTO {
   providedIn: 'root',
 })
 export class ClienteService {
-  private base = 'http://localhost:8080/api/private/cliente';
+  private base = '/api/private/cliente';
 
   constructor(private http: HttpClient) {}
 

@@ -10,7 +10,7 @@ import {
 })
 export class CheckoutService {
 
-  private apiUrl = 'http://localhost:8080/api/checkout';
+  private apiUrl = '/api/checkout';
 
   constructor(private http: HttpClient) {}
 

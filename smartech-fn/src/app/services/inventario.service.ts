@@ -12,7 +12,7 @@ interface ApiResponse {
   providedIn: 'root',
 })
 export class InventarioService {
-  private baseUrl = 'http://localhost:8080/api/private/inventario';
+  private baseUrl = '/api/private/inventario';
 
   constructor(private http: HttpClient) {}
 

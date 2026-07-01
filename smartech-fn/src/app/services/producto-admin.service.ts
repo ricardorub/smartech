@@ -7,8 +7,8 @@ import { Categoria } from '../models/productos.models';
   providedIn: 'root',
 })
 export class ProductoService {
-  private baseUrl = 'http://localhost:8080/api/admin/productos';
-  private categoriasUrl = 'http://localhost:8080/api/categorias';
+  private baseUrl = '/api/admin/productos';
+  private categoriasUrl = '/api/categorias';
 
   constructor(private http: HttpClient) {}
 

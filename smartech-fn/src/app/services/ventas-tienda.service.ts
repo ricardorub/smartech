@@ -42,7 +42,7 @@ export interface VentaCompletaRequest {
   providedIn: 'root',
 })
 export class VentasTiendaService {
-  private baseUrl = 'http://localhost:8080/api/ventas-tienda';
+  private baseUrl = '/api/ventas-tienda';
 
   constructor(private http: HttpClient) {}
 
