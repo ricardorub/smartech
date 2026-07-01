@@ -31,8 +31,8 @@ services:
 
   frontend:
     build:
-      context: ./smartech-fn
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: smartech-fn/Dockerfile
     container_name: smartech-frontend
     restart: always
     ports:
